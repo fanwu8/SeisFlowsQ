@@ -1,0 +1,22 @@
+#
+# number of interfaces
+#
+ 3
+
+ 2
+    0 0
+ 9200 0
+
+ 2
+    0 3000
+ 9200 3000
+
+ 2
+    0 3500
+ 9200 3500
+
+#
+# for each layer, we give the number of spectral elements in the vertical direction
+#
+ 30
+  5

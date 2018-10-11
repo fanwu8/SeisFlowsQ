@@ -1,0 +1,19 @@
+{
+    "DATA": "", 
+    "FUNC": "/tigress/rmodrak/public_html/2dAcoustic/checkers/scratch/evalfunc", 
+    "GRAD": "/tigress/rmodrak/public_html/2dAcoustic/checkers/scratch/evalgrad", 
+    "HESS": "/tigress/rmodrak/public_html/2dAcoustic/checkers/scratch/evalhess", 
+    "LOCAL": "", 
+    "MASK": null, 
+    "MODEL_INIT": "/home/rmodrak/data/Examples2d/checkers/model_init", 
+    "MODEL_TRUE": "/home/rmodrak/data/Examples2d/checkers/model_true", 
+    "OPTIMIZE": "/tigress/rmodrak/public_html/2dAcoustic/checkers/scratch/optimize", 
+    "OUTPUT": "/tigress/rmodrak/public_html/2dAcoustic/checkers/output", 
+    "PRECOND": "", 
+    "SCRATCH": "/tigress/rmodrak/public_html/2dAcoustic/checkers/scratch", 
+    "SOLVER": "/tigress/rmodrak/public_html/2dAcoustic/checkers/scratch/solver", 
+    "SPECFEM_BIN": "/home/rmodrak/data/Examples2d/checkers/specfem2d-d745c542/bin", 
+    "SPECFEM_DATA": "/home/rmodrak/data/Examples2d/checkers/specfem2d-d745c542/DATA", 
+    "SUBMIT": "/tigress/rmodrak/public_html/2dAcoustic/checkers", 
+    "SYSTEM": "/tigress/rmodrak/public_html/2dAcoustic/checkers/scratch/system"
+}
