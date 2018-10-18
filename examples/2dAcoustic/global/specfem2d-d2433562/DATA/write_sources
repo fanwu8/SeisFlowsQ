@@ -1,0 +1,53 @@
+#!/bin/env python
+
+import fileinput
+
+import numpy as np
+
+from seisflows.tools import unix
+from seisflows.seistools.specfem2d import setpar
+
+#fields = 'latitude,longitude,depth'
+#template = './FORCESOLUTION'
+#basename = 'FORCESOLUTION'
+#sep = ': '
+
+fields = 'name,xs,zs,depth'
+template = './SOURCE'
+basename = 'SOURCE'
+sep = '='
+
+if __name__ == '__main__':
+
+    # construct dictionary
+    mydict = {}
+    ir = 0
+
+    for line in fileinput.input():
+        ir += 1
+
+        keys = fields.split(',')
+        vals = line.split()
+
+        _ = keys.pop(0)
+        name = vals.pop(0)
+
+        filename = basename + '_' + name
+
+        print filename
+
+        mydict[filename] = []
+ 
+        while vals:
+            mydict[filename].append([keys.pop(0),vals.pop(0)])
+
+    # generate source files
+    for filename in mydict:
+        src = template
+        dst = filename
+        unix.cp(src,dst)
+
+        while mydict[filename]:
+            key,val = mydict[filename].pop(0)
+            setpar(key,val,filename,sep='=')
+

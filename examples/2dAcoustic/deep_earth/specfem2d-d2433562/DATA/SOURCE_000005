@@ -1,0 +1,15 @@
+source_surf = .false.
+xs =5.6712e+06
+zs =-2.3790e+06
+source_type = 1
+time_function_type = 1
+name_of_source_file = "dummy"
+burst_band_width = 0
+f0 = 0.002
+tshift = 0.0
+anglesource = 0.0
+Mxx = 1.0
+Mzz = 1.0
+Mxz = 0.0
+factor = 10000000000.0
+
