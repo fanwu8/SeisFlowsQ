@@ -187,6 +187,9 @@ def tilde_expand(mydict):
             raise Exception
         if val[0:2] == '~/':
             mydict[key] = os.getenv('HOME') +'/'+ val[2:]
+        elif val[0:1] != '/':
+            mydict[key] = os.getcwd() + '/' + val
+
     return mydict
 
 
