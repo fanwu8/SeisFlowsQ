@@ -4,3 +4,6 @@
 doc/_build
 parameters*c
 paths*c
+
+output*
+scratch
