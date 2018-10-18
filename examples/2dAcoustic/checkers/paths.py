@@ -1,13 +1,13 @@
 
 DATA = ''
 
-MODEL_INIT = 'model_init'
+MODEL_INIT = '$(pwd)/model_init'
 
-MODEL_TRUE = 'model_true'
+MODEL_TRUE = '$(pwd)/model_true'
 
 PRECOND = ''
 
-SPECFEM_DATA = 'specfem2d-d745c542/DATA'
+SPECFEM_DATA = '$(pwd)/specfem2d-d745c542/DATA'
 
-SPECFEM_BIN = '~/specfem2d-d745c542/bin'
+SPECFEM_BIN = '/home/ccui/specfem2d-d745c542/bin'
 
