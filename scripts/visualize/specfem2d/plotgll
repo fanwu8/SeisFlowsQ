@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from glob import glob
 from os.path import abspath, join
 from seisflows.tools.graphics import plot_gll
-from seisflows.plugins.io.fortran_binary import _read
+from seisflows.plugins.solver_io.fortran_binary import _read
 from seisflows.tools.tools import exists
 
 

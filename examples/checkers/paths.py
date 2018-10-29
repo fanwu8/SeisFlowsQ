@@ -9,5 +9,5 @@ PRECOND = ''
 
 SPECFEM_DATA = '$(pwd)/specfem2d-d745c542/DATA'
 
-SPECFEM_BIN = '/home/ccui/specfem2d-d745c542/bin'
+SPECFEM_BIN = '~/specfem2d-d745c542/bin'
 
