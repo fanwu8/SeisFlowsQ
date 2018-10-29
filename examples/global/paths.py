@@ -1,7 +1,7 @@
 
-MODEL_INIT = '/home/rmodrak/data/Examples2d/global/model_init'
+MODEL_INIT = '$(pwd)/model_init'
 
-MODEL_TRUE = '/home/rmodrak/data/Examples2d/global/model_true'
+MODEL_TRUE = '$(pwd)/model_true'
 
 DATA = ''
 
@@ -9,7 +9,7 @@ MASK = ''
 
 PRECOND = ''
 
-SPECFEM_DATA = '/home/rmodrak/data/Examples2d/global/specfem2d-d2433562/DATA'
+SPECFEM_DATA = '$(pwd)/specfem2d-d2433562/DATA'
 
-SPECFEM_BIN = '/home/rmodrak/data/Examples2d/global/specfem2d-d2433562/bin'
+SPECFEM_BIN = '$(pwd)/specfem2d-d2433562/bin'
 
