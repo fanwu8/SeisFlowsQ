@@ -1,6 +1,6 @@
 
 WORKFLOW='inversion'    # inversion, migration
-SOLVER='specfem2d'      # specfem2d, specfem3d
+SOLVER='specfem2d_new'      # specfem2d, specfem3d
 SYSTEM='serial'         # serial, pbs, slurm
 OPTIMIZE='LBFGS'        # NLCG, LBFGS
 PREPROCESS='base'       # base
@@ -9,6 +9,7 @@ POSTPROCESS='base'      # base
 MISFIT='Waveform'
 MATERIALS='LegacyAcoustic'
 DENSITY='Constant'
+ATTENUATION='no'
 
 
 # WORKFLOW

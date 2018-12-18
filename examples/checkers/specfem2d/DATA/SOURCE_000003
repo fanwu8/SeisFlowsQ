@@ -3,6 +3,8 @@ xs =84727.0
 zs =333826.0
 source_type = 1
 time_function_type =1
+name_of_source_file             = YYYYYYYYYYYYYYYYYY
+burst_band_width                = 0.
 f0 =0.084
 tshift =0
 anglesource = 0.00
@@ -10,5 +12,3 @@ Mxx = 1.000000
 Mzz = 1.000000
 Mxz = 0.000000
 factor = 1.000e+10
-
-
