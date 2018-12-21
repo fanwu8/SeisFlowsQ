@@ -63,7 +63,7 @@ class specfem2d_new(custom_import('solver', 'base')):
 
         if nt != PAR.NT:
             if self.taskid == 0: print "WARNING: nt != PAR.NT"
-            setpar('nt', PAR.NT)
+            setpar('NSTEP', PAR.NT)
 
         if dt != PAR.DT:
             if self.taskid == 0: print "WARNING: dt != PAR.DT"
