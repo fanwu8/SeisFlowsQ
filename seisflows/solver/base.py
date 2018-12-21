@@ -291,7 +291,7 @@ class base(object):
         unix.mkdir(path)
 
         # fill in any missing parameters
-        missing_keys = diff(parameters, dict.keys())
+        missing_keys = diff(parameters, list(dict.keys()))
         for iproc in range(self.mesh_properties.nproc):
             for key in missing_keys:
                 dict[key] += self.io.read_slice(
@@ -369,7 +369,7 @@ class base(object):
         # apply smoothing operator
         unix.cd(self.cwd)
         for name in parameters or self.parameters:
-            print ' smoothing', name
+            print(' smoothing', name)
             call_solver(
                 system.mpiexec(),
                 PATH.SPECFEM_BIN +'/'+ 'xsmooth_sem '
@@ -380,7 +380,7 @@ class base(object):
                 + output_path + '/ ',
                 output='/dev/null')
 
-        print ''
+        print('')
 
         # rename output files
         files = glob(output_path+'/*')
@@ -554,7 +554,7 @@ class base(object):
         wildcard = self.source_prefix+'_*'
         globstar = sorted(glob(path +'/'+ wildcard))
         if not globstar:
-             print msg.SourceError_SPECFEM % (path, wildcard)
+             print(msg.SourceError_SPECFEM % (path, wildcard))
              sys.exit(-1)
 
         names = []

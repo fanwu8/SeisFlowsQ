@@ -31,17 +31,17 @@ if __name__ == '__main__':
         path = '/home/rmodrak/data'
     else:
         path = getpath()
-    print ''
+    print('')
 
     # select directory
     dirs = ['Examples2d', 'Examples3d', 'Examples3dGlobe']
     dir = unix.select(dirs)
-    print ''
+    print('')
 
     # select subdirectory
     subdirs = listdir(path+'/'+dir)
     subdir = unix.select(subdirs)
-    print ''
+    print('')
 
     # set up working directory
     fullpath = path+'/'+dir+'/'+subdir

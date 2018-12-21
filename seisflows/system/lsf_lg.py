@@ -203,7 +203,7 @@ class lsf_lg(custom_import('system', 'base')):
         if ntask==1:
             return [job]
         else:
-            nn = range(1,PAR.NSRC+1)
+            nn = list(range(1,PAR.NSRC+1))
             return [job+'['+str(ii)+']' for ii in nn]
 
 
@@ -217,8 +217,8 @@ class lsf_lg(custom_import('system', 'base')):
             else:
                 states += [0]
             if state in ['EXIT']:
-                print 'LSF job failed: %s ' %job
-                print msg.TaskError_LSF % (classname, method, job)
+                print('LSF job failed: %s ' %job)
+                print(msg.TaskError_LSF % (classname, method, job))
                 sys.exit(-1)
         isdone = all(states)
 

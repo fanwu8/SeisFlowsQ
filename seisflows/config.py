@@ -1,5 +1,5 @@
 
-import copy_reg
+import copyreg
 import imp
 import os
 import re
@@ -39,7 +39,7 @@ def config():
 
     # check if objects already exist on disk
     if exists(_output()):
-        print msg.WarningOverwrite
+        print(msg.WarningOverwrite)
         sys.exit()
 
     # instantiate and register objects
@@ -51,11 +51,11 @@ def config():
         sys.modules['seisflows_'+name].check()
 
     if not hasattr(sys.modules['seisflows_parameters'], 'workflow'.upper()):
-        print msg.MissingParameter_Worfklow
+        print(msg.MissingParameter_Worfklow)
         sys.exit(-1)
 
     if not hasattr(sys.modules['seisflows_parameters'], 'system'.upper()):
-        print msg.MissingParameter_System
+        print(msg.MissingParameter_System)
         sys.exit(-1)
 
 
@@ -123,7 +123,7 @@ class Null(object):
     def __call__(self, *args, **kwargs):
         return self
 
-    def __nonzero__(self):
+    def __bool__(self):
         return False
 
     def __getattr__(self, key):
@@ -182,8 +182,8 @@ def custom_import(*args):
 def tilde_expand(mydict):
     """ Expands tilde character in path strings
     """
-    for key,val in mydict.items():
-        if type(val) not in [str, unicode]:
+    for key,val in list(mydict.items()):
+        if type(val) not in [str, str]:
             raise Exception
         if val[0:2] == '~/':
             mydict[key] = os.getenv('HOME') +'/'+ val[2:]
@@ -226,9 +226,9 @@ def _full(path):
 # for relevant discussion, see stackoverflow thread "Can't pickle <type 'instancemethod'> when using python's multiprocessing Pool.map()"
 
 def _pickle_method(method):
-    func_name = method.im_func.__name__
-    obj = method.im_self
-    cls = method.im_class
+    func_name = method.__func__.__name__
+    obj = method.__self__
+    cls = method.__self__.__class__
     return _unpickle_method, (func_name, obj, cls)
 
 
@@ -243,5 +243,5 @@ def _unpickle_method(func_name, obj, cls):
     return func.__get__(obj, cls)
 
 
-copy_reg.pickle(types.MethodType, _pickle_method, _unpickle_method)
+copyreg.pickle(types.MethodType, _pickle_method, _unpickle_method)
 

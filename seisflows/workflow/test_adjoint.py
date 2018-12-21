@@ -82,15 +82,15 @@ class test_adjoint(base):
         preprocess.setup()
 
 
-        print 'SIMULATION 1 OF 3'
+        print('SIMULATION 1 OF 3')
         system.run('solver', 'setup')
 
-        print 'SIMULATION 2 OF 3'
+        print('SIMULATION 2 OF 3')
         self.prepare_model()
         system.run('solver', 'eval_func',
                    path=PATH.SCRATCH)
 
-        print 'SIMULATION 3 OF 3'
+        print('SIMULATION 3 OF 3')
         system.run('solver', 'eval_grad',
                    path=PATH.SCRATCH)
 
@@ -108,18 +108,18 @@ class test_adjoint(base):
         kernels = solver.load(PATH.SCRATCH+'/'+'kernels'+'/'+self.event, suffix='_kernel')
 
         # dot prodcut in data space
-        keys = obs.keys()
+        keys = list(obs.keys())
         LHS = DotProductLHS(keys, syn, adj)
 
         # dot product in model space
         keys = ['rho', 'vp', 'vs'] # model.keys()
         RHS = DotProductRHS(keys, model, kernels)
 
-        print 
-        print 'LHS:', LHS
-        print 'RHS:', RHS
-        print 'RELATIVE DIFFERENCE:', (LHS-RHS)/RHS
-        print
+        print() 
+        print('LHS:', LHS)
+        print('RHS:', RHS)
+        print('RELATIVE DIFFERENCE:', (LHS-RHS)/RHS)
+        print()
 
 
     ### utility functions

@@ -30,13 +30,13 @@ class multithreaded(custom_import('system', 'multicore')):
     def check(self):
         """ Checks parameters and paths
         """
-        print """
+        print("""
             DEPRECATION WARNING
 
                 SYSTEM.MULTITHREADED has been renamed SYSTEM.MULTICORE
 
                 Please update your parameter file.
-        """
+        """)
 
         super(multithreaded, self).check()
 

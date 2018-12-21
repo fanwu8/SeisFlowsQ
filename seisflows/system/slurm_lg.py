@@ -223,10 +223,10 @@ class slurm_lg(custom_import('system', 'base')):
         for job in jobs:
             state = self.job_status(job)
             if state in ['TIMEOUT']:
-                print msg.TimoutError % (classname, method, job, PAR.TASKTIME)
+                print(msg.TimoutError % (classname, method, job, PAR.TASKTIME))
                 sys.exit(-1)
             elif state in ['FAILED', 'NODE_FAIL']:
-                print msg.TaskError_SLURM % (classname, method, job)
+                print(msg.TaskError_SLURM % (classname, method, job))
                 sys.exit(-1)
             elif state in ['COMPLETED']:
                 states += [1]

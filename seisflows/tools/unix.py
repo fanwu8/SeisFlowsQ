@@ -17,7 +17,7 @@ def cat(src, *dst):
     f.close()
 
     if not dst:
-        print contents
+        print(contents)
     else:
         f = open(dst, 'w')
         f.write(contents)
@@ -113,11 +113,11 @@ def rm(path=''):
 def select(items, prompt=''):
     while True:
         if prompt:
-            print prompt
+            print(prompt)
         for i, item in enumerate(items):
-            print("%2d) %s" % (i + 1, item))
+            print(("%2d) %s" % (i + 1, item)))
         try:
-            reply = int(raw_input().strip())
+            reply = int(input().strip())
             status = (1 <= reply <= len(items))
         except (ValueError, TypeError, OverflowError):
             status = 0

@@ -35,7 +35,7 @@ class pbs_lg(custom_import('system', 'base')):
     def check(self):
         """ Checks parameters and paths
         """
-        print msg.Warning_pbs_lg
+        print(msg.Warning_pbs_lg)
 
         # name of job
         if 'TITLE' not in PAR:
@@ -172,7 +172,7 @@ class pbs_lg(custom_import('system', 'base')):
             line = f.readline()
             job = line.split()[-1].strip()
         if hosts == 'all' and PAR.NTASK > 1:
-            nn = range(PAR.NTASK)
+            nn = list(range(PAR.NTASK))
             job0 = job.strip('[].sdb')
             return [job0+'['+str(ii)+'].sdb' for ii in nn]
         else:
@@ -231,7 +231,7 @@ class pbs_lg(custom_import('system', 'base')):
             else:
                 states += [0]
             if state in ['F']:
-                print msg.TaskError_PBS % (classname, method, job)
+                print(msg.TaskError_PBS % (classname, method, job))
                 sys.exit(-1)
         isdone = all(states)
 

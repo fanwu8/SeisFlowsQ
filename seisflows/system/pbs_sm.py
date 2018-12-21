@@ -35,7 +35,7 @@ class pbs_lg(custom_import('system', 'base')):
     def check(self):
         """ Checks parameters and paths
         """
-        print msg.Warning_pbs_sm
+        print(msg.Warning_pbs_sm)
 
         # name of job
         if 'TITLE' not in PAR:

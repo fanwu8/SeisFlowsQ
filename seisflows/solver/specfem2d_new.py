@@ -62,11 +62,11 @@ class specfem2d_new(custom_import('solver', 'base')):
         #f0 = getpar('f0', file='DATA/SOURCE', cast=float)
 
         if nt != PAR.NT:
-            if self.taskid == 0: print "WARNING: nt != PAR.NT"
+            if self.taskid == 0: print("WARNING: nt != PAR.NT")
             setpar('NSTEP', PAR.NT)
 
         if dt != PAR.DT:
-            if self.taskid == 0: print "WARNING: dt != PAR.DT"
+            if self.taskid == 0: print("WARNING: dt != PAR.DT")
             setpar('deltat', PAR.DT)
 
         #if f0 != PAR.F0:
@@ -75,7 +75,7 @@ class specfem2d_new(custom_import('solver', 'base')):
 
         if self.mesh_properties.nproc != PAR.NPROC:
             if self.taskid == 0:
-                print 'Warning: mesh_properties.nproc != PAR.NPROC'
+                print('Warning: mesh_properties.nproc != PAR.NPROC')
 
         if 'MULTIPLES' in PAR:
             if PAR.MULTIPLES:

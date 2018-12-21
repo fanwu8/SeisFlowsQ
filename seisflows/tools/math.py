@@ -55,7 +55,7 @@ def polyfit2(x, f):
     if p[0] > 0:
         return -p[1]/(2*p[0])
     else:
-        print -1
+        print(-1)
         raise Exception()
 
 
@@ -65,7 +65,7 @@ def lsq2(x, f):
     if p[0] > 0:
         return -p[1]/(2*p[0])
     else:
-        print -1
+        print(-1)
         raise Exception()
 
 

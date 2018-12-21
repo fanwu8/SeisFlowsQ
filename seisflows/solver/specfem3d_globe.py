@@ -217,7 +217,7 @@ class specfem3d_globe(custom_import('solver', 'base')):
         unix.cd(self.cwd)
         unix.cd('traces/obs')
 
-        print 'made it here'
+        print('made it here')
         if PAR.FORMAT in ['ASCII', 'ascii']:
             filenames = []
             for channel in PAR.CHANNELS:

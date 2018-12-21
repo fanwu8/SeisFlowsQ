@@ -50,7 +50,7 @@ def uniquerows(a, sort_array=False, return_index=False):
     else:
         ua = a[ui[sj]]
         if return_index:
-            ui = np.array(range(len(ui)))[ui[sj]]
+            ui = np.array(list(range(len(ui))))[ui[sj]]
 
     if return_index:
         return ua, ui

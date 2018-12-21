@@ -11,7 +11,7 @@ def _gauss(nt, dt, sigma):
     y = np.exp(-(0.5*t/sigma)**2.)
 
     if nt*dt < 3.*sigma:
-        print warning
+        print(warning)
 
     return y
 
@@ -23,7 +23,7 @@ def ricker(nt, dt, fp):
 
     ts = 1.5**0.5/(np.pi*fp)
     if nt*dt < 2*ts:
-        print warning
+        print(warning)
 
     return y
 
@@ -43,7 +43,7 @@ def gabor(nt, df, fp):
 
     ts = 1.5**0.5/(np.pi*fp)
     if nt*dt < 2*ts:
-        print warning
+        print(warning)
 
     return y
 

@@ -62,7 +62,7 @@ class multicore(custom_import('system', 'serial')):
         self.checkpoint(PATH.OUTPUT, classname, method, args, kwargs)
 
         running_tasks = dict()
-        queued_tasks = range(PAR.NTASK)
+        queued_tasks = list(range(PAR.NTASK))
 
         # implements "work queue" pattern
         while queued_tasks or running_tasks:
@@ -76,14 +76,14 @@ class multicore(custom_import('system', 'serial')):
                 sleep(0.1)
 
             # checks status of running tasks
-            for i, p in running_tasks.items():
+            for i, p in list(running_tasks.items()):
                 if p.poll() != None:
                     running_tasks.pop(i)
 
             if running_tasks:
                 sleep(1.)
 
-        print ''
+        print('')
 
 
     def run_single(self, classname, method, *args, **kwargs):
@@ -97,7 +97,7 @@ class multicore(custom_import('system', 'serial')):
     ### private methods
 
     def _run_task(self, classname, method, taskid=0):
-        env = os.environ.copy().items()
+        env = list(os.environ.copy().items())
         env += [['SEISFLOWS_TASKID', str(taskid)]]
         self.progress(taskid)
 

@@ -54,7 +54,7 @@ def exists(names):
     for name in iterable(names):
         if not name:
             return False
-        elif not isinstance(name, basestring):
+        elif not isinstance(name, str):
             raise TypeError
         elif not os.path.exists(name):
             return False
@@ -120,13 +120,13 @@ def loadjson(filename):
 
 def savejson(filename, obj):
     """Save object using json"""
-    with open(filename, 'wb') as file:
+    with open(filename, 'w', encoding='utf8') as file:
         json.dump(obj, file, sort_keys=True, indent=4)
 
 
 def loadpy(filename):
     if not exists(filename):
-        print msg.FileError % filename
+        print(msg.FileError % filename)
         raise IOError
 
     # load module
@@ -135,7 +135,7 @@ def loadpy(filename):
 
     # strip private attributes
     output = Struct()
-    for key, val in vars(module).items():
+    for key, val in list(vars(module).items()):
         if key[0] != '_':
             output[key] = val
     return output
@@ -160,8 +160,8 @@ def loadyaml(filename):
         dict = yaml.load(file)
 
     # replace None
-    if 'None' in dict.values():
-        for key,val in dict.items():
+    if 'None' in list(dict.values()):
+        for key,val in list(dict.items()):
             if val=='None': dict[key]=None
 
     return dict
@@ -170,7 +170,7 @@ def loadyaml(filename):
 def getset(arg):
     if not arg:
         return set()
-    elif isinstance(arg, basestring):
+    elif isinstance(arg, str):
         return set([arg])
     else:
         return set(arg)

@@ -38,11 +38,11 @@ class test_forward(base):
         """ Generates seismic data
         """
 
-        print 'Running solver...'
+        print('Running solver...')
 
         system.run('solver', 'generate_data',
                    model_path=PATH.MODEL,
                    model_type='gll',
                    model_name='model')
 
-        print "Finished\n"
+        print("Finished\n")

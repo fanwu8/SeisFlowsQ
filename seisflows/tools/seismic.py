@@ -6,7 +6,6 @@ import numpy as np
 
 from collections import defaultdict
 from os.path import abspath, join, exists
-from string import find
 from seisflows.tools import msg, unix
 from seisflows.tools.tools import iterable
 
@@ -23,11 +22,11 @@ def call_solver(mpiexec, executable, output='solver.log'):
             mpiexec +' '+ executable,
             shell=True,
             stdout=f)
-    except subprocess.CalledProcessError, err:
-        print msg.SolverError % (mpiexec +' '+ executable)
+    except subprocess.CalledProcessError as err:
+        print(msg.SolverError % (mpiexec +' '+ executable))
         sys.exit(-1)
     except OSError:
-        print msg.SolverError % (mpiexec +' '+ executable)
+        print(msg.SolverError % (mpiexec +' '+ executable))
         sys.exit(-1)
     finally:
         f.close()
@@ -86,7 +85,7 @@ def getpar(key, file='DATA/Par_file', sep='=', cast=str):
     with open(file, 'r') as f:
         # read line by line
         for line in f:
-            if find(line, key) == 0:
+            if line.find(key) == 0:
                 # read key
                 key, val = _split(line, sep)
                 if not key:
@@ -102,7 +101,7 @@ def getpar(key, file='DATA/Par_file', sep='=', cast=str):
         return cast(val)
 
     else:
-        print 'Not found in parameter file: %s\n' % key
+        print('Not found in parameter file: %s\n' % key)
         raise Exception
 
 
@@ -116,7 +115,7 @@ def setpar(key, val, filename='DATA/Par_file', path='.', sep='='):
     with open(path +'/'+ filename, 'r') as file:
         lines = []
         for line in file:
-            if find(line, key) == 0:
+            if line.find(key) == 0:
                 # read key
                 key, _ = _split(line, sep)
                 # read comment
@@ -138,7 +137,7 @@ def setpar(key, val, filename='DATA/Par_file', path='.', sep='='):
 ### utility functions
 
 def _split(str, sep):
-    n = find(str, sep)
+    n = str.find(sep)
     if n >= 0:
         return str[:n], str[n + len(sep):]
     else:
@@ -150,4 +149,4 @@ def _merge(*parts):
 
 
 def _zip(keys, vals):
-    return zip(iterable(keys), iterable(vals))
+    return list(zip(iterable(keys), iterable(vals)))

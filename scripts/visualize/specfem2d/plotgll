@@ -85,7 +85,7 @@ if __name__ == '__main__':
     maxval = max(v)
 
     msg = '\n%s\nmin, max: %f, %f\n'
-    print msg % (args.file, minval, maxval)
+    print(msg % (args.file, minval, maxval))
 
     f, p = plot_gll(x, y, v)
 

@@ -65,18 +65,18 @@ class migration(base):
         postprocess.setup()
 
         # set up solver machinery
-        print 'Preparing solver...'
+        print('Preparing solver...')
         system.run('solver', 'setup')
 
         self.prepare_model()
 
         # perform migration
-        print 'Generating synthetics...'
+        print('Generating synthetics...')
         system.run('solver', 'eval_func',
                    path=PATH.SCRATCH,
                    write_residuals=False)
 
-        print 'Backprojecting...'
+        print('Backprojecting...')
         system.run('solver', 'eval_grad',
                    path=PATH.SCRATCH,
                    export_traces=PAR.SAVETRACES)
@@ -100,7 +100,7 @@ class migration(base):
         else:
             self.save_kernels_sum()
 
-        print 'Finished\n'
+        print('Finished\n')
 
 
     ### utility functions

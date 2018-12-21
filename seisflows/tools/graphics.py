@@ -44,7 +44,7 @@ def plot_vector(t, v, xlabel='', ylabel='', title=''):
         raise ValueError('v must be a vector or a time series')
 
     if v.ndim == 1:
-        x = range(len(v))
+        x = list(range(len(v)))
         y = v
     else:
         x = v[:, 0]
@@ -196,7 +196,7 @@ def _get_offsets(stream):
 def get_regular_ticks(v, interval):
     """ Returns regular tick intervals.
     """
-    f = interp1d(v, range(len(v)))
+    f = interp1d(v, list(range(len(v))))
     begin = int(v[0] / interval) * interval
     end = v[-1]
     tick_labels = np.arange(begin, end, interval)
