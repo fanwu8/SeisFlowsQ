@@ -57,21 +57,21 @@ class specfem2d(custom_import('solver', 'base')):
     def check_solver_parameter_files(self):
         """ Checks solver parameters
         """
-        nt = getpar('nt', cast=int)
-        dt = getpar('deltat', cast=float)
-        f0 = getpar('f0', file='DATA/SOURCE', cast=float)
+        nt = getpar('NSTEP', cast=int)
+        dt = getpar('DT', cast=float)
+        #f0 = getpar('f0', file='DATA/SOURCE', cast=float)
 
         if nt != PAR.NT:
             if self.taskid == 0: print("WARNING: nt != PAR.NT")
-            setpar('nt', PAR.NT)
+            setpar('NSTEP', PAR.NT)
 
         if dt != PAR.DT:
             if self.taskid == 0: print("WARNING: dt != PAR.DT")
             setpar('deltat', PAR.DT)
 
-        if f0 != PAR.F0:
-            if self.taskid == 0: print("WARNING: f0 != PAR.F0")
-            setpar('f0', PAR.F0, filename='DATA/SOURCE')
+        #if f0 != PAR.F0:
+        #    if self.taskid == 0: print "WARNING: f0 != PAR.F0"
+        #    setpar('f0', PAR.F0, filename='DATA/SOURCE')
 
         if self.mesh_properties.nproc != PAR.NPROC:
             if self.taskid == 0:
@@ -93,7 +93,7 @@ class specfem2d(custom_import('solver', 'base')):
         setpar('SIMULATION_TYPE', '1')
         setpar('SAVE_FORWARD', '.false.')
 
-        call_solver(system.mpiexec(), 'bin/xmeshfem2D')
+        call_solver(system.mpiexec(), 'bin/xmeshfem2D',output='mesher.log')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
 
         if PAR.FORMAT in ['SU', 'su']:
@@ -111,7 +111,7 @@ class specfem2d(custom_import('solver', 'base')):
         # work around SPECFEM2D's use of different name conventions for
         # regular traces and 'adjoint' traces
         if PAR.FORMAT in ['SU', 'su']:
-            files = glob('traces/adj/*.su')
+            files = glob('traces/adj*/*.su')
             unix.rename('.su', '.su.adj', files)
 
         # work around SPECFEM2D's requirement that all components exist,
@@ -152,8 +152,8 @@ class specfem2d(custom_import('solver', 'base')):
         """
         setpar('SIMULATION_TYPE', '1')
         setpar('SAVE_FORWARD', '.true.')
-
         call_solver(system.mpiexec(), 'bin/xmeshfem2D')
+
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
 
         if PAR.FORMAT in ['SU', 'su']:
@@ -175,8 +175,105 @@ class specfem2d(custom_import('solver', 'base')):
             files = glob('traces/adj/*.su')
             unix.rename('.su', '.su.adj', files)
 
-        call_solver(system.mpiexec(), 'bin/xmeshfem2D')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
+
+    def adjoint_att(self):
+        """ Calls SPECFEM2D adjoint solver
+        """
+        unix.rm('SEM')
+        unix.ln('traces/adj_att', 'SEM')
+
+        # hack to deal with different SPECFEM2D name conventions for
+        # regular traces and 'adjoint' traces
+        if PAR.FORMAT in ['SU', 'su']:
+            files = glob('traces/adj_att/*.su')
+            unix.rename('.su', '.su.adj', files)
+
+        call_solver(system.mpiexec(), 'bin/xspecfem2D')
+
+
+    def rename_kernels(self):
+        """ Works around conflicting kernel filename conventions
+        """
+        #files = []
+        #files += glob('*proc??????_alpha_acoustic_kernel.bin')
+        #unix.rename('alpha_acoustic', 'vp', files)
+        files = []
+        files += glob('*proc??????_alpha_kernel.bin')
+        unix.rename('alpha', 'vp', files)
+        files = []
+        files += glob('*proc??????_c_acoustic_kernel.bin')
+        unix.rename('c_acoustic', 'vp', files)
+     #   unix.rename('c_acoustic', 'Qkappa', files)
+        files = []
+        files += glob('*proc??????_rhop_acoustic_kernel.bin')
+        unix.rename('rhop_acoustic', 'rho', files)
+
+        files = []
+        files += glob('*proc??????_beta_kernel.bin')
+        unix.rename('beta', 'vs', files)
+
+    def export_att_kernel(self, path):
+        unix.cd(self.kernel_databases)
+
+        # work around conflicting name conventions
+        files = []
+        files += glob('*proc??????_c_acoustic_kernel.bin')
+        unix.rename('c_acoustic', 'Qkappa', files)
+
+        src = glob('*Qkappa_kernel.bin')
+        dst = join(path, 'kernels', self.source_name)
+        unix.mkdir(dst)
+        unix.mv(src, dst)
+
+
+    def initialize_solver_directories(self):
+        """ Creates directory structure expected by SPECFEM3D, copies 
+          executables, and prepares input files. Executables must be supplied 
+          by user as there is currently no mechanism for automatically
+          compiling from source.
+        """
+        unix.mkdir(self.cwd)
+        unix.cd(self.cwd)
+
+        # create directory structure
+        unix.mkdir('bin')
+        unix.mkdir('DATA')
+        unix.mkdir('OUTPUT_FILES')
+
+        unix.mkdir('traces/obs')
+        unix.mkdir('traces/syn')
+        unix.mkdir('traces/adj')
+        if PAR.ATTENUATION == 'yes' :
+          unix.mkdir('traces/adj_att')
+
+        unix.mkdir(self.model_databases)
+        unix.mkdir(self.kernel_databases)
+
+        # copy exectuables
+        src = glob(PATH.SPECFEM_BIN +'/'+ '*')
+        dst = 'bin/'
+        unix.cp(src, dst)
+
+        # copy input files
+        #src = glob(PATH.SPECFEM_DATA +'/'+ '*')
+        #dst = 'DATA/'
+        #unix.cp(src, dst)
+
+        unix.cp(PATH.SPECFEM_DATA +'/Par_file','DATA/')
+        unix.cp(PATH.SPECFEM_DATA +'/interfaces.dat','DATA/')
+        unix.cp(PATH.SPECFEM_DATA +'/STATIONS','DATA/')
+
+        src = PATH.SPECFEM_DATA + '/' + self.source_prefix +'_'+ self.source_name
+        dst = 'DATA/' + self.source_prefix
+        unix.cp(src, dst)
+
+        #src = 'DATA/STATIONS'+'_'+ self.source_name
+        #dst = 'DATA/STATIONS'
+        #unix.cp(src, dst)
+
+        self.check_solver_parameter_files()
+
 
 
     ### file transfer utilities
@@ -225,5 +322,4 @@ class specfem2d(custom_import('solver', 'base')):
     # which lacked a smoothing utility
     #if not exists(PATH.SPECFEM_BIN+'/'+'xsmooth_sem'):
     #    smooth = staticmethod(smooth_legacy)
-    smooth = staticmethod(smooth_legacy)
-
+    #smooth = staticmethod(smooth_legacy)
