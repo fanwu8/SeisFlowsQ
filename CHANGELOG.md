@@ -1,3 +1,7 @@
+## 1.0.4
+`2018-12-26`
+Added example for GPU configuration
+
 ## 1.0.3
 
 `2018-12-21`
