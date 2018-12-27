@@ -9,5 +9,5 @@ PRECOND = ''
 
 SPECFEM_DATA = '$(pwd)/specfem2d/DATA'
 
-SPECFEM_BIN = '$(pwd)/specfem2d/bin'
+SPECFEM_BIN = '$(pwd)/../../../specfem2d/bin'
 

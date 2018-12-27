@@ -1,6 +1,6 @@
 ## 1.0.4
 `2018-12-26`
-Added example for GPU configuration
+Updated README.md for running example projects
 
 ## 1.0.3
 
