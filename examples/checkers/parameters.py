@@ -7,7 +7,7 @@ PREPROCESS='base'       # base
 POSTPROCESS='base'      # base
 
 MISFIT='Waveform'
-MATERIALS='LegacyAcoustic'
+MATERIALS='Elastic'
 DENSITY='Constant'
 ATTENUATION='no'
 
@@ -22,7 +22,7 @@ SAVERESIDUALS=1
 
 # PREPROCESSING
 FORMAT='su'             # data file format
-CHANNELS='y'            # data channels
+CHANNELS=['x','z']            # data channels
 NORMALIZE=0             # normalize
 BANDPASS=0              # bandpass
 MUTE=0                  # mute direct arrival
@@ -34,6 +34,7 @@ MUTESLOPE=0.            # mute slope
 
 # POSTPROCESSING
 SMOOTH=20.              # smoothing radius
+RATIO=0.98              # reduce strength over iterations
 SCALE=6.0e6             # scaling factor
 
 

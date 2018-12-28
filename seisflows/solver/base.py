@@ -368,6 +368,15 @@ class base(object):
 
         # apply smoothing operator
         unix.cd(self.cwd)
+
+        files = []
+        files += glob(PATH.MODEL_INIT + '/proc??????_x.bin')
+        files += glob(PATH.MODEL_INIT + '/proc??????_z.bin')
+        files += glob(PATH.MODEL_INIT + '/proc??????_NSPEC_ibool.bin')
+        files += glob(PATH.MODEL_INIT + '/proc??????_jacobian.bin')
+        for file in files:
+          unix.cp(file, input_path)
+
         for name in parameters or self.parameters:
             print(' smoothing', name)
             call_solver(
@@ -377,8 +386,8 @@ class base(object):
                 + str(span) + ' '
                 + name + '_kernel' + ' '
                 + input_path + '/ '
-                + output_path + '/ ',
-                output='/dev/null')
+                + output_path + '/ F',
+                output=output_path + '/smooth_' + name + '.log')
 
         print('')
 

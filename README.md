@@ -24,7 +24,7 @@ make all
 cd examples/checkers
 sh run_this_example.sh
 ````
-5. Plot output
+5. Plot output.
 ````
 python ../../scripts/visualize/specfem2d/quickplot output/model_0005
 ````

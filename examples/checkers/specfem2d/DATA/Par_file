@@ -32,7 +32,7 @@ freq0_poroelastic               = 10
 
 
 
-P_SV                            = .false.        
+P_SV                            = .true.        
 
 NSTEP                           = 4800           
 DT                              = 6.0d-2         

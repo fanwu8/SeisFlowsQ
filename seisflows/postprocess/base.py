@@ -25,6 +25,9 @@ class base(object):
         if 'SMOOTH' not in PAR:
             setattr(PAR, 'SMOOTH', 0.)
 
+        if 'RATIO' not in PAR:
+            setattr(PAR, 'RATIO', 1.)
+
         if 'MASK' not in PATH:
             setattr(PATH, 'MASK', None)
 
@@ -94,31 +97,41 @@ class base(object):
 
 
 
-    def process_kernels(self, path, parameters):
-        """ 
-        Sums kernels from individual sources, with optional smoothing
+    def process_kernels(self, path='',iter=0, parameters=[]):
+        """ Combines contributions from individual sources and performs any 
+         required processing steps
 
-        :input path: directory containing sensitivity kernels
-        :input parameters: list of material parameters e.g. ['vp','vs']
+          INPUT
+              PATH - directory containing sensitivity kernels
+              PARAMETERS - list of material parameters to be operated on
         """
         if not exists(path):
             raise Exception
 
-        if PAR.SMOOTH > 0:
-            solver.combine(
-                   input_path=path,
-                   output_path=path+'/'+'sum_nosmooth',
-                   parameters=parameters)
+        if not parameters:
+            parameters = solver.parameters
 
-            solver.smooth(
+        solver.combine(
+               input_path=path,
+               output_path=path+'/'+'sum',
+               parameters=parameters)
+
+        if PATH.MASK:
+            # apply mask
+            g = solver.merge(solver.load(path+'/'+'sum',suffix='_kernel'))
+            g *= solver.merge(solver.load(PATH.MASK))
+            solver.save(solver.split(g), path+'/'+'sum',suffix='_kernel')
+
+        smo = PAR.SMOOTH * PAR.RATIO**(iter)       
+        
+        if PAR.SMOOTH > 0:
+          src = path+'/'+'sum'
+          dst = path+'/'+'sum_nosmooth' 
+          unix.mv(src, dst)
+          solver.smooth(
                    input_path=path+'/'+'sum_nosmooth',
                    output_path=path+'/'+'sum',
                    parameters=parameters,
-                   span=PAR.SMOOTH)
-        else:
-            solver.combine(
-                   input_path=path,
-                   output_path=path+'/'+'sum',
-                   parameters=parameters)
+                   span=smo)
 
 

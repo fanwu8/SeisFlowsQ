@@ -5,6 +5,7 @@ from glob import glob
 
 import numpy as np
 
+from glob import glob
 from seisflows.plugins.solver.specfem2d import smooth_legacy
 from seisflows.tools.seismic import getpar, setpar
 
@@ -320,6 +321,7 @@ class specfem2d(custom_import('solver', 'base')):
 
     # workaround for older versions of SPECFEM2D,
     # which lacked a smoothing utility
-    #if not exists(PATH.SPECFEM_BIN+'/'+'xsmooth_sem'):
-    #    smooth = staticmethod(smooth_legacy)
-    #smooth = staticmethod(smooth_legacy)
+    if not exists(PATH.SPECFEM_BIN+'/'+'xsmooth_sem') or \
+        len(glob(PATH.MODEL_INIT+'/'+'proc*_NSPEC_ibool.bin')) == 0 or \
+        len(glob(PATH.MODEL_INIT+'/'+'proc*_jacobian.bin')) == 0:
+        smooth = staticmethod(smooth_legacy)
