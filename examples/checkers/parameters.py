@@ -7,7 +7,7 @@ PREPROCESS='base'       # base
 POSTPROCESS='base'      # base
 
 MISFIT='Waveform'
-MATERIALS='Elastic'
+MATERIALS='LegacyAcoustic'
 DENSITY='Constant'
 ATTENUATION='no'
 
@@ -22,7 +22,7 @@ SAVERESIDUALS=1
 
 # PREPROCESSING
 FORMAT='su'             # data file format
-CHANNELS=['x','z']            # data channels
+CHANNELS=['y']            # data channels
 NORMALIZE=0             # normalize
 BANDPASS=0              # bandpass
 MUTE=0                  # mute direct arrival
