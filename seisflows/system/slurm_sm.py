@@ -47,6 +47,10 @@ class slurm_sm(custom_import('system', 'base')):
         if 'NTASK' not in PAR:
             raise ParameterError(PAR, 'NTASK')
 
+        # limit on number of concurrent tasks
+        if 'NTASKMAX' not in PAR:
+            setattr(PAR, 'NTASKMAX', PAR.NTASK)
+
         # number of cores per task
         if 'NPROC' not in PAR:
             raise ParameterError(PAR, 'NPROC')
@@ -121,7 +125,7 @@ class slurm_sm(custom_import('system', 'base')):
 
         if hosts == 'all':
             running_tasks = dict()
-            queued_tasks = range(PAR.NTASK)
+            queued_tasks = list(range(PAR.NTASK))
 
             # implements "work queue" pattern
             while queued_tasks or running_tasks:
@@ -135,14 +139,14 @@ class slurm_sm(custom_import('system', 'base')):
                     sleep(0.1)
 
                 # checks status of running tasks
-                for i, p in running_tasks.items():
+                for i, p in running_tasks.copy().items():
                     if p.poll() != None:
                         running_tasks.pop(i)
 
                 if running_tasks:
                     sleep(0.1)
 
-            print ''
+            print('')
 
         elif hosts == 'head':
             os.environ['SEISFLOWS_TASKID'] = str(0)
@@ -154,7 +158,7 @@ class slurm_sm(custom_import('system', 'base')):
 
     
     def _launch(self, classname, method, taskid=0):
-        env = os.environ.copy().items()
+        env = list(os.environ.copy().items())
         env += [['SEISFLOWS_TASKID', str(taskid)]]
         self.progress(taskid)
 
