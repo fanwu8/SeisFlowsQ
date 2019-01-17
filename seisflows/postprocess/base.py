@@ -15,86 +15,70 @@ solver = sys.modules['seisflows_solver']
 
 
 class base(object):
-    """ Regularization, smoothing, sharpening, masking and related operations
-      on models or gradients
+    """ Gradient postprocessing class
     """
 
     def check(self):
         """ Checks parameters and paths
         """
+        # check parameters
+        if 'CLIP' not in PAR:
+            setattr(PAR, 'CLIP', 0.)
+
         if 'SMOOTH' not in PAR:
             setattr(PAR, 'SMOOTH', 0.)
 
-        if 'RATIO' not in PAR:
-            setattr(PAR, 'RATIO', 1.)
+        if 'KERNELTYPE' not in PAR:
+            setattr(PAR, 'KERNELTYPE', 'Relative')
 
+        if 'PRECOND' not in PAR:
+            setattr(PAR, 'PRECOND', False)
+
+        # check paths
         if 'MASK' not in PATH:
             setattr(PATH, 'MASK', None)
+
+        if 'PRECOND' not in PATH:
+            setattr(PATH, 'PRECOND', None)
 
         if PATH.MASK:
             assert exists(PATH.MASK)
 
 
     def setup(self):
-        """ Placeholder for initialization or setup tasks
+        """ Can be used to perform any required initialization or setup tasks
         """
         pass
 
 
-    def write_gradient(self, path):
-        """
-        Combines contributions from individual sources and material parameters
-        to get the gradient, and optionally applies user-supplied scaling
+    def write_gradient(self, path, iterf=0):
+        """ Writes gradient of objective function
 
-        :input path: directory from which kernels are read and to which
-                     gradient is written
+          Combines and processes contributions to the gradient from individual
+          sources
+
+          INPUT
+              PATH - directory containing output of adjoint simulation
+              iterf - number of iterations
         """
         if not exists(path):
             raise Exception
 
-        # because processing operations can be quite expensive, they must be
-        # run through the HPC system interface; processing does not involve
-        # embarassingly parallel tasks, we use system.run_single instead of 
-        # system.run
-        system.run_single('postprocess', 'process_kernels',
-                 path=path+'/kernels',
+        system.run('postprocess', 'process_kernels',
+                 hosts='head',
+                 path=path+'/kernels',iter=iterf,
                  parameters=solver.parameters)
 
-        gradient = solver.load(
-            path+'/'+'kernels/sum', suffix='_kernel')
+        gradient = solver.merge(solver.load(
+                 path +'/'+ 'kernels/sum',
+                 suffix='_kernel'))
 
-        # merge into a single vector
-        gradient = solver.merge(gradient)
+        self.save(gradient, path)
 
-        # convert to absolute perturbations, log dm --> dm
-        # see Eq.13 Tromp et al 2005
-        gradient *= solver.merge(solver.load(path +'/'+ 'model'))
-
-        if PATH.MASK:
-            # to scale the gradient, users can supply "masks" by exactly
-            # mimicking the file format in which models stored
-            mask = solver.merge(solver.load(PATH.MASK))
-
-            # while both masking and preconditioning involve scaling the
-            # gradient, they are fundamentally different operations:
-            # masking is ad hoc, preconditioning is a change of variables;
-            # see Modrak & Tromp 2016 GJI
-            solver.save(solver.split(gradient),
-                        path +'/'+ 'gradient_nomask',
-                        parameters=solver.parameters,
-                        suffix='_kernel')
-
-            solver.save(solver.split(gradient*mask),
-                        path +'/'+ 'gradient',
-                        parameters=solver.parameters,
-                        suffix='_kernel')
-
-        else:
-            solver.save(solver.split(gradient),
-                        path +'/'+ 'gradient',
-                        parameters=solver.parameters,
-                        suffix='_kernel')
-
+        if PAR.KERNELTYPE=='Relative':
+            # convert from relative to absolute perturbations
+            gradient *= solver.merge(solver.load(path +'/'+ 'model'))
+            self.save(gradient, path, backup='relative')
 
 
     def process_kernels(self, path='',iter=0, parameters=[]):
@@ -118,12 +102,12 @@ class base(object):
 
         if PATH.MASK:
             # apply mask
-            g = solver.merge(solver.load(path+'/'+'sum',suffix='_kernel'))
-            g *= solver.merge(solver.load(PATH.MASK))
-            solver.save(solver.split(g), path+'/'+'sum',suffix='_kernel')
+            gradient = solver.merge(solver.load(path+'/'+'sum',suffix='_kernel'))
+            gradient *= solver.merge(solver.load(PATH.MASK))
+            solver.save(solver.split(gradient), path+'/'+'sum',suffix='_kernel')
 
         smo = PAR.SMOOTH * PAR.RATIO**(iter)       
-        
+
         if PAR.SMOOTH > 0:
           src = path+'/'+'sum'
           dst = path+'/'+'sum_nosmooth' 
@@ -133,5 +117,26 @@ class base(object):
                    output_path=path+'/'+'sum',
                    parameters=parameters,
                    span=smo)
+
+
+    def save(self, gradient, path='', parameters=[], backup=None):
+        """ Convience function for saving dictionary representation of 
+          gradient
+        """
+        if not exists(path):
+            raise Exception
+
+        if not parameters:
+            parameters = solver.parameters
+
+        if backup:
+            src = path +'/'+ 'gradient'
+            dst = path +'/'+ 'gradient_'+backup
+            unix.mv(src, dst)
+
+        solver.save(solver.split(gradient),
+                    path +'/'+ 'gradient',
+                    parameters=parameters,
+                    suffix='_kernel')
 
 

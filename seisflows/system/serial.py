@@ -119,10 +119,3 @@ class serial(custom_import('system', 'base')):
         """ Specifies MPI executable used to invoke solver
         """
         return PAR.MPIEXEC
-
-
-    def progress(self, taskid):
-        """ Provides status update
-        """
-        if PAR.NTASK > 1:
-            print(' task ' + '%02d of %02d' % (taskid+1, PAR.NTASK))

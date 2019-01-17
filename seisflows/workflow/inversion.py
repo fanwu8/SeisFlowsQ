@@ -275,7 +275,7 @@ class inversion(base):
         """
         src = join(path, 'gradient')
         dst = 'g_'+suffix
-        postprocess.write_gradient(path)
+        postprocess.write_gradient(path, optimize.iter)
         parts = solver.load(src, suffix='_kernel')
         optimize.save(dst, solver.merge(parts))
 

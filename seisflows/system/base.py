@@ -1,5 +1,9 @@
 
+import sys
+
 from seisflows.config import save
+
+PAR = sys.modules['seisflows_parameters']
 
 class base(object):
     """ Abstract base class
@@ -39,4 +43,11 @@ class base(object):
           interruption        
         """
         save()
+
+
+    def progress(self, taskid):
+        """ Provides status update
+        """
+        if PAR.NTASK > 1:
+            print(' task ' + '%02d of %02d' % (taskid+1, PAR.NTASK))
 
