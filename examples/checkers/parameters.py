@@ -1,7 +1,7 @@
 
 WORKFLOW='inversion'    # inversion, migration
 SOLVER='specfem2d'      # specfem2d, specfem3d
-SYSTEM='slurm_sm'         # serial, pbs, slurm
+SYSTEM='serial'         # serial, pbs, slurm
 OPTIMIZE='LBFGS'        # NLCG, LBFGS
 PREPROCESS='base'       # base
 POSTPROCESS='base'      # base
@@ -22,7 +22,7 @@ SAVERESIDUALS=1
 
 # PREPROCESSING
 FORMAT='su'             # data file format
-CHANNELS=['y']            # data channels
+CHANNELS=['y']          # data channels
 NORMALIZE=0             # normalize
 BANDPASS=0              # bandpass
 MUTE=0                  # mute direct arrival
@@ -33,7 +33,7 @@ MUTESLOPE=0.            # mute slope
 
 
 # POSTPROCESSING
-SMOOTH=20.              # smoothing radius
+SMOOTH=20000.           # smoothing radius
 RATIO=0.98              # reduce strength over iterations
 SCALE=6.0e6             # scaling factor
 
@@ -53,4 +53,3 @@ F0=0.084                # dominant frequency
 # SYSTEM
 NTASK=25                # must satisfy 1 <= NTASK <= NSRC
 NPROC=1                 # processors per task
-
