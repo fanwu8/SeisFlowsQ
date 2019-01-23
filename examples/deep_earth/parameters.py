@@ -1,6 +1,6 @@
 
 WORKFLOW='inversion'      # inversion, migration
-SOLVER='specfem2d'        # specfem2d, specfem3d
+SOLVER='specfem2d_legacy'        # specfem2d, specfem3d
 SYSTEM='tiger_sm'         # serial, parallel, pbs, slurm
 OPTIMIZE='LBFGS'          # base, newton
 PREPROCESS='base'         # base

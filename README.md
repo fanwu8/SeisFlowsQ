@@ -21,12 +21,11 @@ make all
 3. [Install obspy](https://github.com/obspy/obspy/wiki#installation).
 4. Run example project in terminal, make sure obspy is activated.
 ````
-cd examples/checkers
-sh run_this_example.sh
+sh run_example.sh
 ````
-5. Plot output.
+5. Plot output for (checker example).
 ````
-python ../../scripts/visualize/specfem2d/quickplot output/model_0005
+python scripts/visualize/specfem2d/quickplot examples/checkers/output/model_0005
 ````
 
 Design
