@@ -13,23 +13,26 @@ do
     fi
 done
 
-echo "Enter the index of the example to run (1-$ndir):"
+re='^[0-9]+$'
 
-for ((i=0; i<$ndir; i++)); do      
-    echo "$[i+1]) ${dirs[i]}"
-done
+if [[ $1 =~ $re ]] && [ $1 -gt 0 ] && [ $1 -le $ndir ]; then
+  ie=$1
+else
+  echo "Enter the index of the example to run (1-$ndir):"
 
-while true; do
-  read ie
-  re='^[0-9]+$'
-  if ! [[ $ie =~ $re ]]; then
-    echo "Please input a valid number"
-  elif [ $ie -gt 0 ] && [ $ie -le $ndir ]; then
-    break
-  else
-    echo "Please input a number between 1 and $ndir"
-  fi
-done
+  for ((i=0; i<$ndir; i++)); do      
+      echo "$[i+1]) ${dirs[i]}"
+  done
+
+  while true; do
+    read ie
+    if [[ $ie =~ $re ]] && [ $ie -gt 0 ] && [ $ie -le $ndir ]; then
+      break
+    else
+      echo "Please input a number between 1 and $ndir"
+    fi
+  done
+fi
 
 dir=${dirs[ie-1]}
 echo "Running example/"$dir
