@@ -95,6 +95,10 @@ class inversion(base):
         if 'SAVERESIDUALS' not in PAR:
             setattr(PAR, 'SAVERESIDUALS', 0)
 
+        # source encoding
+        if 'RANDOM_OVER_IT' not in PAR:
+            setattr(PAR, 'RANDOM_OVER_IT', 1)
+
         # parameter assertions
         assert 1 <= PAR.BEGIN <= PAR.END
 
@@ -149,7 +153,8 @@ class inversion(base):
             else:
                 print('Generating data') 
 
-            system.run('solver', 'setup')
+            system.run('solver', 'setup',
+                hosts='all')
 
 
     def initialize(self):
@@ -159,7 +164,8 @@ class inversion(base):
 
         print('Generating synthetics')
         system.run('solver', 'eval_func',
-                   path=PATH.GRAD)
+                    hosts='all',
+                    path=PATH.GRAD)
 
         self.write_misfit(path=PATH.GRAD, suffix='new')
 
@@ -209,6 +215,7 @@ class inversion(base):
         self.write_model(path=PATH.FUNC, suffix='try')
 
         system.run('solver', 'eval_func',
+                   hosts='all',
                    path=PATH.FUNC)
 
         self.write_misfit(path=PATH.FUNC, suffix='try')
@@ -218,6 +225,7 @@ class inversion(base):
         """ Performs adjoint simulation to evaluate gradient
         """
         system.run('solver', 'eval_grad',
+                   hosts='all',
                    path=PATH.GRAD,
                    export_traces=divides(optimize.iter, PAR.SAVETRACES))
 
