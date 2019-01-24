@@ -28,8 +28,8 @@ class test_system(base):
 
 
     def main(self):
-        system.run_single('workflow', 'hello',  
-            msg='Hello from 0')
+        system.run('workflow', 'hello',  
+            msg='Hello from 0', hosts='head')
 
         system.run('workflow', 'hello', 
             msg='Hello from %d')
