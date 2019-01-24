@@ -95,10 +95,6 @@ class inversion(base):
         if 'SAVERESIDUALS' not in PAR:
             setattr(PAR, 'SAVERESIDUALS', 0)
 
-        # source encoding
-        if 'RANDOM_OVER_IT' not in PAR:
-            setattr(PAR, 'RANDOM_OVER_IT', 1)
-
         # parameter assertions
         assert 1 <= PAR.BEGIN <= PAR.END
 
@@ -164,8 +160,8 @@ class inversion(base):
 
         print('Generating synthetics')
         system.run('solver', 'eval_func',
-                    hosts='all',
-                    path=PATH.GRAD)
+                   hosts='all',
+                   path=PATH.GRAD)
 
         self.write_misfit(path=PATH.GRAD, suffix='new')
 
