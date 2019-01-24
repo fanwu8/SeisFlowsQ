@@ -24,7 +24,7 @@ class TestToolsCode(unittest.TestCase):
 
     def test_exists(self):
         existent = os.listdir(os.curdir)
-        non_existent = [str(uuid.uuid4().get_hex().upper()[0:6])
+        non_existent = [str(uuid.uuid4().hex.upper()[0:6])
                         for i in range(10)]
         for name in existent:
             self.assertTrue(tools.exists(name))
