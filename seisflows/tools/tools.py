@@ -17,6 +17,7 @@ from subprocess import check_output
 import numpy as np
 
 from seisflows.tools import msg
+from seisflows.tools.unix import which
 
 
 class Struct(dict):

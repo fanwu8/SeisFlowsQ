@@ -8,7 +8,13 @@ import sys
 import time
 
 from os.path import abspath, basename, isdir, isfile, join
-from seisflows.tools.tools import iterable
+
+
+def iterable(arg):
+    if not isinstance(arg, (list, tuple)):
+        return [arg]
+    else:
+        return arg
 
 
 def cat(src, *dst):
