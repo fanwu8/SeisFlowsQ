@@ -9,15 +9,17 @@ WD="$PWD/setup/test_preprocess"
 
 
 # adjust paths
-sed -i "s:^DATA.*=.*:DATA = '$WD/data.su':" $WD/paths
-sed -i "s:^SYNTHETICS.*=.*:SYNTHETICS = '$WD/synthetics.su':" $WD/paths
+cp $WD/paths $WD/paths_c
+sed -i "s:^DATA.*=.*:DATA = '$WD/data.su':" $WD/paths_c
+sed -i "s:^SYNTHETICS.*=.*:SYNTHETICS = '$WD/synthetics.su':" $WD/paths_c
 
 
 # run tests
-sfrun --workdir=$WD --parameter_file=$WD/parameters --path_file=$WD/paths
+sfrun --workdir=$WD --parameter_file=$WD/parameters --path_file=$WD/paths_c
 
 
 # to preserve output for inspection, comment out next line
 rm -rf $WD/output* $WD/scratch
 
-
+# delete temp path file
+rm $WD/paths_c
