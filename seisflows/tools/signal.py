@@ -135,7 +135,7 @@ def mask(slope, const, offset, time_scheme, length=400):
     win = win[0:length]
 
     # caculate offsets
-    itmin = int(np.ceil((slope*abs(offset)+const)/dt)) - length/2
+    itmin = int(np.ceil((slope*abs(offset)+const)/dt)) - int(length/2)
     itmax = itmin + length
 
     if 1 < itmin < itmax < nt:
