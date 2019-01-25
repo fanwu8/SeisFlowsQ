@@ -109,7 +109,6 @@ class slurm_sm(custom_import('system', 'base')):
                 + '%s ' %  PAR.SLURMARGS
                 + '--job-name=%s '%PAR.TITLE
                 + '--output=%s '%(PATH.WORKDIR +'/'+ 'output.log')
-#                + '--cpus-per-task=%d '%PAR.NPROC
                 + '--ntasks-per-node=%d ' %PAR.NPROC
                 + '--time=%d '%PAR.WALLTIME
                 + findpath('seisflows.system') +'/'+ 'wrappers/submit '
