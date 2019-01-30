@@ -1,6 +1,6 @@
 
 import sys
-from os.path import basename, join
+from os.path import basename, join, dirname
 from glob import glob
 
 import numpy as np
@@ -268,6 +268,13 @@ class specfem2d(custom_import('solver', 'base')):
         src = PATH.SPECFEM_DATA + '/' + self.source_prefix +'_'+ self.source_name
         dst = 'DATA/' + self.source_prefix
         unix.cp(src, dst)
+
+        stf_file = getpar('name_of_source_file', src).lstrip().rstrip()
+        if stf_file[0:2] == './':
+            stf_file = stf_file[2:]
+            src = dirname(PATH.SPECFEM_DATA) + '/' + stf_file
+            dst = dirname(stf_file) + '/'
+            unix.cp(src, dst)
 
         #src = 'DATA/STATIONS'+'_'+ self.source_name
         #dst = 'DATA/STATIONS'
