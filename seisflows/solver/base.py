@@ -183,7 +183,7 @@ class base(object):
 
     ### high-level solver interface
 
-    def eval_func(self, path='', export_traces=False, write_residuals=True):
+    def eval_func(self, path='', export_traces=False, write_residuals=True, write_adjoint_traces=True):
         """
           Performs forward simulations needed for misfit function evaluation
 
@@ -195,7 +195,7 @@ class base(object):
         self.forward()
 
         if write_residuals:
-            preprocess.prepare_eval_grad(self.cwd)
+            preprocess.prepare_eval_grad(self.cwd, write_adjoint_traces)
             self.export_residuals(path)
 
 

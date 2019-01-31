@@ -184,7 +184,7 @@ class inversion(base):
 
         while True:
             print(" trial step", optimize.line_search.step_count + 1)
-            self.evaluate_function()
+            self.evaluate_function(False)
             status = optimize.update_search()
 
             if status > 0:
@@ -205,14 +205,15 @@ class inversion(base):
                     sys.exit(-1)
 
 
-    def evaluate_function(self):
+    def evaluate_function(self, wat=True):
         """ Performs forward simulation to evaluate objective function
         """
         self.write_model(path=PATH.FUNC, suffix='try')
 
         system.run('solver', 'eval_func',
                    hosts='all',
-                   path=PATH.FUNC)
+                   path=PATH.FUNC,
+                   write_adjoint_traces=wat)
 
         self.write_misfit(path=PATH.FUNC, suffix='try')
 

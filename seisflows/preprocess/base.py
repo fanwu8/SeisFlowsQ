@@ -78,7 +78,7 @@ class base(object):
         self.writer = getattr(writers, PAR.FORMAT)
 
 
-    def prepare_eval_grad(self, path='.'):
+    def prepare_eval_grad(self, path='.', write_adjoint_traces=True):
         """
          Prepares solver for gradient evaluation by writing residuals and
          adjoint traces
@@ -104,7 +104,8 @@ class base(object):
             if PAR.MISFIT:
                 self.write_residuals(path, syn, obs)
 
-            self.write_adjoint_traces(path+'/'+'traces/adj', syn, obs, filename)
+            if write_adjoint_traces:
+                self.write_adjoint_traces(path+'/'+'traces/adj', syn, obs, filename)
 
 
     def write_residuals(self, path, syn, obs):
