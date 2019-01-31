@@ -303,7 +303,7 @@ class specfem2d(custom_import('solver', 'base')):
         """ Get path of source time function files
         """
         stf_files = []
-        for source_name in self.source_names:
+        for source_name in self.source_names_all:
             src = PATH.SPECFEM_DATA + '/' + self.source_prefix +'_'+ source_name
             stf_file = getpar('name_of_source_file', src).lstrip().rstrip()
             
@@ -315,7 +315,8 @@ class specfem2d(custom_import('solver', 'base')):
 
             stf_files.append(stf_file)
 
-        self._stf_files = stf_files
+        self._stf_files = stf_files[:PAR.NTASK]
+        self._stf_files_all = stf_files
 
 
     @property

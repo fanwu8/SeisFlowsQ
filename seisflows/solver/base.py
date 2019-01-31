@@ -570,6 +570,7 @@ class base(object):
         for path in globstar:
             names += [basename(path).split('_')[-1]]
         self._source_names = names[:PAR.NTASK]
+        self._source_names_all = names
 
 
     def check_stf_files(self):
@@ -609,10 +610,22 @@ class base(object):
        return self._source_names
 
     @property
+    def source_names_all(self):
+       if not hasattr(self, '_source_names_all'):
+           self.check_source_names()
+       return self._source_names_all
+
+    @property
     def stf_files(self):
         if not hasattr(self, '_stf_files'):
             self.check_stf_files()
         return self._stf_files
+
+    @property
+    def stf_files_all(self):
+        if not hasattr(self, '_stf_files_all'):
+            self.check_stf_files()
+        return self._stf_files_all
 
     @property
     def mesh_properties(self):

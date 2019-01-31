@@ -232,7 +232,7 @@ class inversion(base):
     def finalize(self):
         """ Saves results from current model update iteration
         """
-        self.checkpoint()
+        system.checkpoint()
 
         if divides(optimize.iter, PAR.SAVEMODEL):
             self.save_model()
@@ -258,13 +258,6 @@ class inversion(base):
         unix.rm(PATH.FUNC)
         unix.mkdir(PATH.GRAD)
         unix.mkdir(PATH.FUNC)
-
-
-    def checkpoint(self):
-        """ Writes information to disk so workflow can be resumed following a
-          break
-        """
-        save()
 
 
     def write_model(self, path='', suffix=''):
