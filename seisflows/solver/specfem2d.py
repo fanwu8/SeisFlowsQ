@@ -1,6 +1,6 @@
 
 import sys
-from os.path import basename, join, dirname
+from os.path import basename, join, dirname, relpath
 from glob import glob
 
 import numpy as np
@@ -269,12 +269,13 @@ class specfem2d(custom_import('solver', 'base')):
         dst = 'DATA/' + self.source_prefix
         unix.cp(src, dst)
 
-        stf_file = getpar('name_of_source_file', src).lstrip().rstrip()
-        if stf_file[0:2] == './':
-            stf_file = stf_file[2:]
-            src = dirname(PATH.SPECFEM_DATA) + '/' + stf_file
-            dst = dirname(stf_file) + '/'
-            unix.cp(src, dst)
+        if self.stf_file:
+            src = self.stf_file
+            rel = relpath(src, dirname(PATH.SPECFEM_DATA))
+            if (rel[0:3] != '../'):
+                dst = dirname(rel)
+                unix.cp(src, dst)
+            
 
         #src = 'DATA/STATIONS'+'_'+ self.source_name
         #dst = 'DATA/STATIONS'
@@ -296,6 +297,25 @@ class specfem2d(custom_import('solver', 'base')):
         src = glob(join(self.cwd, 'DATA/*.bin'))
         dst = path
         unix.cp(src, dst)
+
+
+    def check_stf_files(self):
+        """ Get path of source time function files
+        """
+        stf_files = []
+        for source_name in self.source_names:
+            src = PATH.SPECFEM_DATA + '/' + self.source_prefix +'_'+ source_name
+            stf_file = getpar('name_of_source_file', src).lstrip().rstrip()
+            
+            if stf_file[0:2] == './':
+                stf_file = dirname(PATH.SPECFEM_DATA) + '/' + stf_file[2:]
+            
+            if not exists(stf_file):
+                stf_file = None
+
+            stf_files.append(stf_file)
+
+        self._stf_files = stf_files
 
 
     @property

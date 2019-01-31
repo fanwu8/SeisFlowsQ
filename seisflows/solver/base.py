@@ -572,6 +572,10 @@ class base(object):
         self._source_names = names[:PAR.NTASK]
 
 
+    def check_stf_files(self):
+        raise NotImplementedError
+
+
     def check_solver_parameter_files(self):
         # optional method, can be implemented by subclass
         pass
@@ -590,6 +594,10 @@ class base(object):
         return self.source_names[self.taskid]
 
     @property
+    def stf_file(self):
+        return self.stf_files[self.taskid]
+
+    @property
     def cwd(self):
         # returns working directory currently in use
         return join(PATH.SOLVER, self.source_name)
@@ -599,6 +607,12 @@ class base(object):
        if not hasattr(self, '_source_names'):
            self.check_source_names()
        return self._source_names
+
+    @property
+    def stf_files(self):
+        if not hasattr(self, '_stf_files'):
+            self.check_stf_files()
+        return self._stf_files
 
     @property
     def mesh_properties(self):
