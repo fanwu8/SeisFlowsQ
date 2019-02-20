@@ -34,7 +34,7 @@ freq0_poroelastic               = 10
 
 P_SV                            = .false.        
 
-NSTEP                           = 4800           
+NSTEP                           = 12300           
 DT                              = 6.0d-2         
 USER_T0                         = 0.0d0         
 time_stepping_scheme            = 1   

@@ -6,7 +6,7 @@ OPTIMIZE='LBFGS'        # NLCG, LBFGS
 PREPROCESS='ortho'      # base
 POSTPROCESS='base'      # base
 
-MISFIT='Waveform'
+MISFIT='Phase_freq2'
 MATERIALS='LegacyAcoustic'
 DENSITY='Constant'
 ATTENUATION='no'
@@ -22,9 +22,9 @@ SAVERESIDUALS=1
 
 # SOURCE ENCODING
 NEVT=25
-PERIOD=4800
-BW_L=0.03125
-BW_H=0.8125
+PERIOD=7500
+BW_L=0.02
+BW_H=0.52
 RANDOM_OVER_IT=1
 NFREQ_PER_EVENT=9
 
@@ -53,7 +53,7 @@ STEPTHRESH=0.1          # step length safeguard
 
 
 # SOLVER
-NT=4800                 # number of time steps
+NT=12300                # number of time steps
 DT=0.06                 # time step
 F0=0.084                # dominant frequency
 

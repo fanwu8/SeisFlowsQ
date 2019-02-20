@@ -75,7 +75,6 @@ class ortho(custom_import('preprocess', 'base')):
                     stf_obs.append(float(line.split()[1]))
 
             ft_stf[:, isrc] = fft(stf_obs, n=period)[freq_idx]
-
             for itrace in range(ntrace):
                 trace = self.reader(PATH.DATA + '/' + source_name, solver.data_filenames[itrace])
                 for irec in range(nrec):
@@ -86,95 +85,91 @@ class ortho(custom_import('preprocess', 'base')):
         self.save('ft_stf', ft_stf)
         self.save('ft_obs', ft_obs)
  
-    # def prepare_eval_grad(self, path='.',wat='yes'):
-    #     """ Prepares solver for gradient evaluation by writing residuals and
-    #       adjoint traces
+    def prepare_eval_grad(self, path='.',wat='yes'):
+        """ Prepares solver for gradient evaluation by writing residuals and
+          adjoint traces
 
-    #       INPUT
-    #         PATH - directory containing observed and synthetic seismic data
-    #     """
-    #     solver = sys.modules['seisflows_solver']
-    #     for filename in solver.data_filenames:
-    #         obs = self.reader(path+'/'+'traces/obs', filename)
-    #         syn = self.reader(path+'/'+'traces/syn', filename)
-    #         nt, dt, _ = self.get_time_scheme(syn)
+          INPUT
+            PATH - directory containing observed and synthetic seismic data
+        """
+        solver = sys.modules['seisflows_solver']
+        for filename in solver.data_filenames:
+            obs = self.reader(path+'/'+'traces/obs', filename)
+            syn = self.reader(path+'/'+'traces/syn', filename)
+            nt, dt, _ = self.get_time_scheme(syn)
 
-    #         if PAR.MISFIT:
-    #             self.write_residuals(path, syn, obs)
-    #         if wat == 'yes' :
-    #           self.write_adjoint_traces(path+'/'+'traces/adj', syn, obs, filename)
-    #           if PAR.ATTENUATION =='yes':
-    #             self.write_adjoint_traces(path+'/'+'traces/adj_att', syn, obs, filename,att='Yes')
+            if PAR.MISFIT:
+                self.write_residuals(path, syn, obs)
+            if wat == 'yes' :
+              self.write_adjoint_traces(path+'/'+'traces/adj', syn, obs, filename)
+              if PAR.ATTENUATION =='yes':
+                self.write_adjoint_traces(path+'/'+'traces/adj_att', syn, obs, filename,att='Yes')
 
-    # def write_residuals(self, path, syn, obs):
-    #     """ Computes residuals from observations and synthetics
+    def write_residuals(self, path, syn, obs):
+        """ Computes residuals from observations and synthetics
 
-    #       INPUT
-    #         PATH - location residuals will be written
-    #         SYN - obspy Stream object containing synthetic data
-    #         OBS - obspy Stream object containing observed data
-    #     """
-    #     nt, dt, _ = self.get_time_scheme(syn)
-    #     nn, _ = self.get_network_size(syn)
+          INPUT
+            PATH - location residuals will be written
+            SYN - obspy Stream object containing synthetic data
+            OBS - obspy Stream object containing observed data
+        """
+        nt, dt, _ = self.get_time_scheme(syn)
+        nn, _ = self.get_network_size(syn)
 
-    #     residuals = []
-    #     #freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
-    #     obs_freqs = self.load('freq_data')
-    #     sff_freqs = self.load('freq_sff')
-    #     sff_freqs_true = self.load('freq_sff_true')
-    #     freq_mask = self.load('freq_mask')
-    #     start = time.time()
-    #     for ii in range(nn):
-    #         residuals.append(self.misfit(syn[ii].data, nt, dt,obs_freqs[:,ii],sff_freqs,sff_freqs_true,freq_mask[:,ii]))
-    #     #residuals.append(self.misfit(syn, nt, dt,obs_freqs,freq_mask))
-    #     end = time.time()
-    #     print "Duration of misfit computation : " +str(end-start)
-    #     filename = path+'/'+'residuals'
-    #     if exists(filename):
-    #         residuals.extend(list(np.loadtxt(filename)))
-
-    #     np.savetxt(filename, residuals)
-
-    # def write_adjoint_traces(self, path, syn, obs, channel,att=""):
-    #     """ Writes "adjoint traces" required for gradient computation
-    #      (overwrites synthetic data in the process)
-
-    #       INPUT
-    #         PATH - location "adjoint traces" will be written
-    #         SYN - obspy Stream object containing synthetic data
-    #         OBS - obspy Stream object containing observed data
-    #         CHANNEL - channel or component code used by writer
-    #     """
-    #     nt, dt, _ = self.get_time_scheme(syn)
-    #     nn, _ = self.get_network_size(syn)
+        residuals = []
+        # TODO freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
+        obs_freqs = self.load('ft_obs_se')
+        sff_freqs = self.load('ft_stf_se')
+        sff_freqs_true = self.load('ft_stf_se_sinus')
+        freq_mask = self.load('freq_mask_se')
         
-    #     adj = syn.copy()
-    #     if att =='Yes' :
-    #       self.adjoint = getattr(adjoint, PAR.MISFIT + '_att')
-    #     else :
-    #       self.adjoint = getattr(adjoint, PAR.MISFIT)
-    #     #freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
-    #     start = time.time()
-    #     obs_freqs = self.load('freq_data')
-    #     sff_freqs = self.load('freq_sff')
-    #     sff_freqs_true = self.load('freq_sff_true')
-    #     freq_mask = self.load('freq_mask')
-    #     end = time.time()
-    #     print "loading file duration : " +str(end-start)
-    #     start = time.time()
-    #     for ii in range(nn):
-    #         adj[ii].data = self.adjoint(syn[ii].data, nt, dt,obs_freqs[:,ii],sff_freqs,sff_freqs_true,freq_mask[:,ii])
-    #     #self.adjoint(syn, adj, nt, dt,obs_freqs,freq_mask)
-    #     adj = self.apply_filter(adj,dt)
-    #     end = time.time()
-    #     print "Duration of adj source computation : " +str(end-start)
-    #     #subset = np.random.choice([i for i in range(nn)],nn-nn/3)
-    #     #for ii in range(nn-nn/3):
-    #     #   adj[subset[ii]].data = np.zeros(len(adj[0].data)) 
+        for ii in range(nn):
+            residuals.append(self.misfit(syn[ii].data, nt, dt,obs_freqs[:,ii],sff_freqs,sff_freqs_true,freq_mask[:,ii]))
+        #residuals.append(self.misfit(syn, nt, dt,obs_freqs,freq_mask))
+        
+        filename = path+'/'+'residuals'
+        if exists(filename):
+            residuals.extend(list(np.loadtxt(filename)))
 
-    #     for tr in adj:
-    #       tr.taper(0.005, type='hann')
-    #     self.writer(adj, path, channel)
+        np.savetxt(filename, residuals)
+
+    def write_adjoint_traces(self, path, syn, obs, channel,att=""):
+        """ Writes "adjoint traces" required for gradient computation
+         (overwrites synthetic data in the process)
+
+          INPUT
+            PATH - location "adjoint traces" will be written
+            SYN - obspy Stream object containing synthetic data
+            OBS - obspy Stream object containing observed data
+            CHANNEL - channel or component code used by writer
+        """
+        nt, dt, _ = self.get_time_scheme(syn)
+        nn, _ = self.get_network_size(syn)
+        
+        adj = syn.copy()
+        if att =='Yes' :
+          self.adjoint = getattr(adjoint, PAR.MISFIT + '_att')
+        else :
+          self.adjoint = getattr(adjoint, PAR.MISFIT)
+        #freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
+        
+        obs_freqs = self.load('ft_obs_se')
+        sff_freqs = self.load('ft_stf_se')
+        sff_freqs_true = self.load('ft_stf_se_sinus')
+        freq_mask = self.load('freq_mask')
+        
+        for ii in range(nn):
+            adj[ii].data = self.adjoint(syn[ii].data, nt, dt,obs_freqs[:,ii],sff_freqs,sff_freqs_true,freq_mask[:,ii])
+        #self.adjoint(syn, adj, nt, dt,obs_freqs,freq_mask)
+        adj = self.apply_filter(adj,dt)
+        
+        #subset = np.random.choice([i for i in range(nn)],nn-nn/3)
+        #for ii in range(nn-nn/3):
+        #   adj[subset[ii]].data = np.zeros(len(adj[0].data)) 
+
+        for tr in adj:
+          tr.taper(0.005, type='hann')
+        self.writer(adj, path, channel)
 
     def load(self, filename):
         # reads vectors from disk
