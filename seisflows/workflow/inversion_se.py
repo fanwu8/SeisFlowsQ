@@ -16,6 +16,7 @@ PAR = sys.modules['seisflows_parameters']
 PATH = sys.modules['seisflows_paths']
 
 system = sys.modules['seisflows_system']
+solver = sys.modules['seisflows_solver']
 optimize = sys.modules['seisflows_optimize']
 
 
@@ -137,7 +138,6 @@ class inversion_se(inversion):
                         # TODO freq_mask
                         ft_stf_se[ifreq] = ft_stf[ifreq, ievt]
                         ft_stf_se_sinus[ifreq]  = ft_stf_sinus[ifreq, rdm_idx[ife]]
-
         # assert that random frequency is a subset of ferquency band
         if (n != nsrc * 2):
             print('Warning: discrete frequency mismatch')
@@ -147,4 +147,8 @@ class inversion_se(inversion):
         savenpy(PATH.ORTHO +'/ft_stf_se_sinus', ft_stf_se_sinus)
         savenpy(PATH.ORTHO +'/freq_mask_se', freq_mask_se)
 
-        # setpararray('f0', f_s, filename= PATH.SOLVER + '/000000/DATA/SOURCE')
+        for source_name in solver.source_names_all[1:]:
+            src = PATH.SPECFEM_DATA + '/' + solver.source_prefix +'_'+ source_name
+            dst = PATH.SOLVER + '/000000/DATA/' + solver.source_prefix
+            unix.cat(src, dst)
+            # setpararray('f0', f_s, filename= PATH.SOLVER + '/000000/DATA/SOURCE')

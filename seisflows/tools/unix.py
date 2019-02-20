@@ -17,7 +17,7 @@ def iterable(arg):
         return arg
 
 
-def cat(src, *dst):
+def cat(src, dst=''):
     f = open(src, 'r')
     contents = f.read()
     f.close()
@@ -25,7 +25,7 @@ def cat(src, *dst):
     if not dst:
         print(contents)
     else:
-        f = open(dst, 'w')
+        f = open(dst, 'a')
         f.write(contents)
         f.close()
 

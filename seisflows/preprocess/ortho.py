@@ -54,12 +54,12 @@ class ortho(custom_import('preprocess', 'base')):
         freq_max = float(PAR.BW_H)
         
         #create a mask on relevant frequencies
-        freq = fftfreq(period, dt)
+        freq_full = fftfreq(period, dt)
         freq_thresh = (freq_max - freq_min) / PAR.NFREQ_PER_EVENT / nevt / 20
-        freq_idx = np.squeeze(np.where((freq_min <= abs(freq)) & (abs(freq) < freq_max - freq_thresh)))
-        freq = freq[freq_idx]
+        freq_idx = np.squeeze(np.where((freq_min <= abs(freq_full)) & (abs(freq_full) < freq_max - freq_thresh)))
+        freq = freq_full[freq_idx]
         nfreq = len(freq_idx)
-        print('Number of frequencies considered: ' +str(nfreq)+' / '+str(len(freq)))
+        print('Number of frequencies considered: ' +str(nfreq)+' / '+str(len(freq_full)))
 
         # converts time data to Fourier domain
         ft_stf = np.zeros((nfreq, nevt), dtype=complex)
