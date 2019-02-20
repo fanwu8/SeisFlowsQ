@@ -10,7 +10,7 @@ from seisflows.workflow.inversion import inversion
 
 from scipy.fftpack import fft, fftfreq
 from seisflows.tools.array import loadnpy, savenpy
-# from seisflows.tools.seismic import setpararray
+from seisflows.tools.seismic import setpararray
 
 PAR = sys.modules['seisflows_parameters']
 PATH = sys.modules['seisflows_paths']
@@ -147,8 +147,10 @@ class inversion_se(inversion):
         savenpy(PATH.ORTHO +'/ft_stf_se_sinus', ft_stf_se_sinus)
         savenpy(PATH.ORTHO +'/freq_mask_se', freq_mask_se)
 
+        dst = PATH.SOLVER + '/000000/DATA/' + solver.source_prefix
         for source_name in solver.source_names_all[1:]:
             src = PATH.SPECFEM_DATA + '/' + solver.source_prefix +'_'+ source_name
-            dst = PATH.SOLVER + '/000000/DATA/' + solver.source_prefix
             unix.cat(src, dst)
-            # setpararray('f0', f_s, filename= PATH.SOLVER + '/000000/DATA/SOURCE')
+
+        setpararray('time_function_type', np.ones(nevt).astype(int) * 10, filename= dst)
+        setpararray('f0', freq_rdm, filename= dst)

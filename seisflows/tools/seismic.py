@@ -133,6 +133,36 @@ def setpar(key, val, filename='DATA/Par_file', path='.', sep='='):
         file.writelines(lines)
 
 
+def setpararray(key, val, filename='DATA/Par_file', path='/', sep='='):
+    """ Writes parameter to SPECFEM parfile
+    """
+
+    #val = str(val)
+
+    # read line by line
+    with open(path +'/'+ filename, 'r') as file:
+        lines = []
+        k = 0
+        for line in file:
+            if line.find(key) == 0:
+                # read key
+                key, _ = _split(line, sep)
+                # read comment
+                _, comment = _split(line, '#')
+                n = len(line) - len(key) - len(str(val)) - len(comment) - 2
+                # replace line
+                if comment:
+                    line = _merge(key, sep, str(val[0]), ' '*n, '#', comment)
+                else:
+                    line = _merge(key, sep, str(val[k]), '\n')
+                    k+=1
+            lines.append(line)
+
+    # write file
+    with open(path +'/'+ filename, 'w') as file:
+        file.writelines(lines)
+
+
 
 ### utility functions
 
