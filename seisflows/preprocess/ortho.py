@@ -121,14 +121,14 @@ class ortho(custom_import('preprocess', 'base')):
 
         residuals = []
         # TODO freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
-        obs_freqs = self.load('ft_obs_se')
-        sff_freqs = self.load('ft_stf_se')
-        sff_freqs_true = self.load('ft_stf_se_sinus')
+        ft_obs_se = self.load('ft_obs_se')
+        ft_stf_se = self.load('ft_stf_se')
+        ft_stf_se_sinus = self.load('ft_stf_se_sinus')
         freq_mask = self.load('freq_mask_se')
         
         for ii in range(nn):
-            residuals.append(self.misfit(syn[ii].data, nt, dt,obs_freqs[:,ii],sff_freqs,sff_freqs_true,freq_mask[:,ii]))
-        #residuals.append(self.misfit(syn, nt, dt,obs_freqs,freq_mask))
+            residuals.append(self.misfit(syn[ii].data, nt, dt,ft_obs_se[:,ii],ft_stf_se,ft_stf_se_sinus,freq_mask[:,ii]))
+        #residuals.append(self.misfit(syn, nt, dt,ft_obs_se,freq_mask))
         
         filename = path+'/'+'residuals'
         if exists(filename):
@@ -156,14 +156,14 @@ class ortho(custom_import('preprocess', 'base')):
           self.adjoint = getattr(adjoint, PAR.MISFIT)
         #freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
         
-        obs_freqs = self.load('ft_obs_se')
-        sff_freqs = self.load('ft_stf_se')
-        sff_freqs_true = self.load('ft_stf_se_sinus')
+        ft_obs_se = self.load('ft_obs_se')
+        ft_stf_se = self.load('ft_stf_se')
+        ft_stf_se_sinus = self.load('ft_stf_se_sinus')
         freq_mask = self.load('freq_mask_se')
         
         for ii in range(nn):
-            adj[ii].data = self.adjoint(syn[ii].data, nt, dt,obs_freqs[:,ii],sff_freqs,sff_freqs_true,freq_mask[:,ii])
-        #self.adjoint(syn, adj, nt, dt,obs_freqs,freq_mask)
+            adj[ii].data = self.adjoint(syn[ii].data, nt, dt,ft_obs_se[:,ii],ft_stf_se,ft_stf_se_sinus,freq_mask[:,ii])
+        #self.adjoint(syn, adj, nt, dt,ft_obs_se,freq_mask)
         adj = self.apply_filter(adj,dt)
         
         #subset = np.random.choice([i for i in range(nn)],nn-nn/3)

@@ -145,10 +145,9 @@ def Phase_freq2(syn,nt,dt,ft_obs,sff_freq,sff_freq_true,freq_mask):
     # (Tromp et al 2005, eq 9)
     wadj = _np.zeros(len(syn))
     period = PAR.PERIOD
-    freq  = fftfreq(period,dt)
 
     m = loadnpy(PATH.ORTHO + '/freq_idx')
-    freq_loc = freq[m]
+    freq_loc = loadnpy(PATH.ORTHO + '/freq')
     
     ft_syn = fft(syn[-period:])[m]
     obs = ft_syn / ( ft_obs * sff_freq_true / sff_freq )
