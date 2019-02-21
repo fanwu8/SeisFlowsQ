@@ -47,7 +47,7 @@ class ortho(custom_import('preprocess', 'base')):
         period = PAR.PERIOD
         dt = PAR.DT
         nrec = PAR.NREC
-        ntrace = len(solver.data_filenames)
+        # ntrace = len(solver.data_filenames)
 
         # get the number of relevant frequencies
         freq_min = float(PAR.BW_L)
@@ -63,7 +63,7 @@ class ortho(custom_import('preprocess', 'base')):
 
         # converts time data to Fourier domain
         ft_stf = np.zeros((nfreq, nevt), dtype=complex)
-        ft_obs = np.zeros((nfreq, nevt, nrec, ntrace), dtype=complex)
+        ft_obs = np.zeros((nfreq, nevt, nrec), dtype=complex) # TODO ntrace
 
         for isrc in range(nevt):
             source_name = solver.source_names_all[isrc]
@@ -75,17 +75,20 @@ class ortho(custom_import('preprocess', 'base')):
                     stf_obs.append(float(line.split()[1]))
 
             ft_stf[:, isrc] = fft(stf_obs, n=period)[freq_idx]
-            for itrace in range(ntrace):
-                trace = self.reader(PATH.DATA + '/' + source_name, solver.data_filenames[itrace])
-                for irec in range(nrec):
-                    ft_obs[:, isrc, irec, itrace] = fft(trace[irec].data, n=period)[freq_idx]
+            # for itrace in range(ntrace):
+            #     trace = self.reader(PATH.DATA + '/' + source_name, solver.data_filenames[itrace])
+            #     for irec in range(nrec):
+            #         ft_obs[:, isrc, irec, itrace] = fft(trace[irec].data, n=period)[freq_idx]
+            for irec in range(nrec):
+                trace = self.reader(PATH.DATA + '/' + source_name, solver.data_filenames[0])
+                ft_obs[:, isrc, irec] = fft(trace[irec].data, n=period)[freq_idx]
         
         self.save('freq_idx', freq_idx)
         self.save('freq', freq)
         self.save('ft_stf', ft_stf)
         self.save('ft_obs', ft_obs)
  
-    def prepare_eval_grad(self, path='.',wat='yes'):
+    def prepare_eval_grad(self, path='.',wat=True):
         """ Prepares solver for gradient evaluation by writing residuals and
           adjoint traces
 
@@ -100,7 +103,7 @@ class ortho(custom_import('preprocess', 'base')):
 
             if PAR.MISFIT:
                 self.write_residuals(path, syn, obs)
-            if wat == 'yes' :
+            if wat:
               self.write_adjoint_traces(path+'/'+'traces/adj', syn, obs, filename)
               if PAR.ATTENUATION =='yes':
                 self.write_adjoint_traces(path+'/'+'traces/adj_att', syn, obs, filename,att='Yes')
@@ -156,7 +159,7 @@ class ortho(custom_import('preprocess', 'base')):
         obs_freqs = self.load('ft_obs_se')
         sff_freqs = self.load('ft_stf_se')
         sff_freqs_true = self.load('ft_stf_se_sinus')
-        freq_mask = self.load('freq_mask')
+        freq_mask = self.load('freq_mask_se')
         
         for ii in range(nn):
             adj[ii].data = self.adjoint(syn[ii].data, nt, dt,obs_freqs[:,ii],sff_freqs,sff_freqs_true,freq_mask[:,ii])

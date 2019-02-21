@@ -97,10 +97,10 @@ class inversion_se(inversion):
         ft_obs = loadnpy(PATH.ORTHO + '/ft_obs')
         
         nfreq = len(freq_idx)
-        ntrace = ft_obs.shape[3]
+        # ntrace = ft_obs.shape[3]
 
         # declaring arrays
-        ft_obs_se = np.zeros((nfreq, nrec, ntrace), dtype=complex)
+        ft_obs_se = np.zeros((nfreq, nrec), dtype=complex)
         ft_stf_se = np.zeros((nfreq), dtype=complex)
         ft_stf_se_sinus = np.zeros((nfreq), dtype=complex)
         ft_stf_sinus = np.zeros((nfreq, nsrc), dtype=complex)
@@ -134,10 +134,11 @@ class inversion_se(inversion):
                     # FIXME frequency threshold
                     if abs(abs(freq_rdm[ife]) - abs(freq[ifreq])) < freq_thresh:
                         n+=1
-                        ft_obs_se[ifreq, :, :]  = ft_obs[ifreq, ievt, :, :]
+                        ft_obs_se[ifreq, :]  = ft_obs[ifreq, ievt, :]
                         # TODO freq_mask
                         ft_stf_se[ifreq] = ft_stf[ifreq, ievt]
                         ft_stf_se_sinus[ifreq]  = ft_stf_sinus[ifreq, rdm_idx[ife]]
+        
         # assert that random frequency is a subset of ferquency band
         if (n != nsrc * 2):
             print('Warning: discrete frequency mismatch')
@@ -148,9 +149,11 @@ class inversion_se(inversion):
         savenpy(PATH.ORTHO +'/freq_mask_se', freq_mask_se)
 
         dst = PATH.SOLVER + '/000000/DATA/' + solver.source_prefix
-        for source_name in solver.source_names_all[1:]:
-            src = PATH.SPECFEM_DATA + '/' + solver.source_prefix +'_'+ source_name
-            unix.cat(src, dst)
+        unix.rm(dst)
+        for ifpe in range(nfpe):
+            for source_name in solver.source_names_all:
+                src = PATH.SPECFEM_DATA + '/' + solver.source_prefix +'_'+ source_name
+                unix.cat(src, dst)
 
-        setpararray('time_function_type', np.ones(nevt).astype(int) * 10, filename= dst)
+        setpararray('time_function_type', np.ones(nsrc).astype(int) * 10, filename= dst)
         setpararray('f0', freq_rdm, filename= dst)

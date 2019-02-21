@@ -42,7 +42,7 @@ time_stepping_scheme            = 1
 ACOUSTIC_FORCING                = .false.
 
 
-NSOURCES                        = 25              
+NSOURCES                        = 225              
 force_normal_to_surface         = .false.        
 
 

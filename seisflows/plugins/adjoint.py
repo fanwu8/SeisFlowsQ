@@ -3,12 +3,18 @@
 
 
 
+import sys
 import numpy as _np
+import cmath
 from scipy.signal import hilbert as _analytic
+from scipy.fftpack import fft, ifft, fftfreq
 
+from seisflows.tools.array import loadnpy
 from seisflows.plugins import misfit
 from seisflows.tools.math import hilbert as _hilbert
 
+PAR = sys.modules['seisflows_parameters']
+PATH = sys.modules['seisflows_paths']
 
 ### adjoint traces generators
 
@@ -132,3 +138,37 @@ def Acceleration(syn, obs, nt, dt):
     adj[1:-1] = (-obs[2:] + 2.*obs[1:-1] - obs[0:-2])/(2.*dt)
     return adj
 
+
+
+def Phase_freq2(syn,nt,dt,ft_obs,sff_freq,sff_freq_true,freq_mask):
+    # waveform difference
+    # (Tromp et al 2005, eq 9)
+    wadj = _np.zeros(len(syn))
+    period = PAR.PERIOD
+    freq  = fftfreq(period,dt)
+
+    m = loadnpy(PATH.ORTHO + '/freq_idx')
+    freq_loc = freq[m]
+    
+    ft_syn = fft(syn[-period:])[m]
+    obs = ft_syn / ( ft_obs * sff_freq_true / sff_freq )
+
+    phase = _np.vectorize(cmath.phase)
+
+    phase_obs = phase(obs)
+    phase_syn = phase(ft_syn)
+    #amp_syn = abs(ft_syn)/ (abs(freq_loc)/500.0)
+    inv_fft = _np.zeros(period,dtype=complex)
+    inv_fft[m] = (freq_mask * phase_obs  ) *  _np.vectorize(_np.complex)(-_np.sin(phase_syn),_np.cos(phase_syn))
+    wadj[-period:] = - 10e15*ifft(inv_fft).real
+    #repeat the periodic signal
+    j=1
+    while ((j+1)*period < len(syn) ):
+      wadj[ -(j+1)*period : -j*period ] = wadj[-period:]
+      j+=1
+    if (j==1):
+      wadj[:-period] = wadj[-(len(syn)-period):]
+    else:
+      wadj[:-(j-1)*period] = wadj[-(len(syn)-(j-1)*period):]
+
+    return wadj

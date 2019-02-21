@@ -2,10 +2,15 @@
 # used by the PREPROCESS class and specified by the MISFIT parameter
 
 
-
+import sys
 import numpy as np
+import cmath
 from scipy.signal import hilbert as _analytic
+from scipy.fftpack import fft, fftfreq
+from seisflows.tools.array import loadnpy
 
+PAR = sys.modules['seisflows_parameters']
+PATH = sys.modules['seisflows_paths']
 
 def Waveform(syn, obs, nt, dt):
     # waveform difference
@@ -98,3 +103,22 @@ def Velocity(syn, obs, nt, dt):
 def Acceleration(syn, obs, nt, dt):
     return Exception('This function can only used for migration.')
 
+
+def Phase_freq2(syn, nt, dt,ft_obs,sff_freq,sff_freq_true, freq_mask):
+    # waveform difference in the frequency domain, considering orthogonal frequencies
+    nstep = len(syn)
+    wadj = 0.0 #np.zeros(nstep)
+    period = PAR.PERIOD
+    freq_min = PAR.BW_L
+    freq_max = PAR.BW_H 
+    #create a frequential mask
+    freq  = fftfreq(period,dt)
+    m = loadnpy(PATH.ORTHO + '/freq_idx')
+    ft_syn = fft(syn[-period:])[m]
+    obs = ft_syn /  ( (ft_obs) * sff_freq_true / sff_freq )
+
+    phase = np.vectorize(cmath.phase)
+    phase_obs = phase(obs)
+#    phase_syn = phase(ft_syn)
+    wadj = (freq_mask * phase_obs**2).sum() 
+    return wadj

@@ -164,7 +164,7 @@ class base(object):
 
     ### signal processing
 
-    def apply_filter(self, traces):
+    def apply_filter(self, traces, dt):
         if not PAR.FILTER:
             return traces
 
@@ -173,28 +173,24 @@ class base(object):
                 tr.detrend('demean')
                 tr.detrend('linear')
                 tr.taper(0.05, type='hann')
-                tr.filter('bandpass',
-                          zerophase=True,
-                          freqmin=PAR.FREQMIN,
-                          freqmax=PAR.FREQMAX)
+                tr.stats.sampling_rate = 1/dt
+                tr.filter('bandpass', freqmin=PAR.FREQMIN, freqmax=PAR.FREQMAX, zerophase=True)
 
         elif PAR.FILTER == 'Lowpass':
             for tr in traces:
                 tr.detrend('demean')
                 tr.detrend('linear')
                 tr.taper(0.05, type='hann')
-                tr.filter('lowpass', 
-                          zerophase=True,
-                          freq=PAR.FREQ)
+                tr.stats.sampling_rate = 1/dt
+                tr.filter('lowpass', freq=PAR.FREQ, zerophase=True)
 
         elif PAR.FILTER == 'Highpass':
             for tr in traces:
                 tr.detrend('demean')
                 tr.detrend('linear')
                 tr.taper(0.05, type='hann')
-                tr.filter('highpass',
-                          zerophase=True,
-                          freq=PAR.FREQ)
+                tr.stats.sampling_rate = 1/dt
+                tr.filter('highpass', freq=PAR.FREQ)
 
         else:
             raise ParameterError()
