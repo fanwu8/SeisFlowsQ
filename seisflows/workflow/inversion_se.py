@@ -115,33 +115,43 @@ class inversion_se(inversion):
         # random frequency
         freq_range = np.linspace(freq_min + freq_shift, freq_max + freq_shift, nsrc + 1)[:-1]
         freq_thresh = (freq_max - freq_min) / nsrc / 20
-        rdm_idx = random.sample(range(0, nsrc), nsrc)
+        # rdm_idx = random.sample(range(0, nsrc), nsrc)
+        rdm_idx = range(nsrc)
         freq_rdm = freq_range[rdm_idx]
 
         # get individual frequency
-        for isrc in range(nsrc):
-            f0 = freq_rdm[isrc]
-            T = 2 * np.pi * dt * np.linspace(0, nt - 1, nt) * f0
-            stf_sinus = 1000 * np.sin(T)
-            ft_stf_sinus[:, isrc] = fft(stf_sinus[-period:])[freq_idx]
-
-        # encode frequencies
-        n=0
+        stf = np.zeros([nt, 2])
+        stf_files = []
         for ifpe in range(nfpe):
             for ievt in range(nevt):
-                ife = ifpe * nevt + ievt
+                isrc = ifpe * nevt + ievt
+                f0 = freq_rdm[isrc]
+                T = 2 * np.pi * dt * np.linspace(0, nt - 1, nt) * f0
+                stf_sinus = 1000 * np.sin(T)
+                ft_stf_sinus[:, isrc] = fft(stf_sinus[-period:])[freq_idx]
+                stf[:, 0] = T
+                stf[:, 1] = stf_sinus
+                stf_file = PATH.SOLVER + '/000000/DATA/STF_' + str(ievt) + '_' + str(ifpe)
+                stf_files.append(stf_file)
+                np.savetxt(stf_file, stf)
+
+        # encode frequencies
+        for ifpe in range(nfpe):
+            for ievt in range(nevt):
+                isrc = ifpe * nevt + ievt
+                n = 0
                 for ifreq in range(nfreq):
-                    # FIXME frequency threshold
-                    if abs(abs(freq_rdm[ife]) - abs(freq[ifreq])) < freq_thresh:
-                        n+=1
+                    if abs(abs(freq_rdm[isrc]) - abs(freq[ifreq])) < freq_thresh:
+                        n += 1
                         ft_obs_se[ifreq, :]  = ft_obs[ifreq, ievt, :]
                         # TODO freq_mask
                         ft_stf_se[ifreq] = ft_stf[ifreq, ievt]
-                        ft_stf_se_sinus[ifreq]  = ft_stf_sinus[ifreq, rdm_idx[ife]]
+                        ft_stf_se_sinus[ifreq]  = ft_stf_sinus[ifreq, rdm_idx[isrc]]
+
+                if n != 2:
+                    print('Warning: descrete frequency is not a subset of frequency band')
         
-        # assert that random frequency is a subset of ferquency band
-        if (n != nsrc * 2):
-            print('Warning: discrete frequency mismatch')
+        # assert that random frequency is a subset of ferquency bands
 
         savenpy(PATH.ORTHO +'/ft_obs_se', ft_obs_se)
         savenpy(PATH.ORTHO +'/ft_stf_se', ft_stf_se)
@@ -151,9 +161,12 @@ class inversion_se(inversion):
         dst = PATH.SOLVER + '/000000/DATA/' + solver.source_prefix
         unix.rm(dst)
         for ifpe in range(nfpe):
-            for source_name in solver.source_names_all:
+            for ievt in range(nevt):
+                source_name = solver.source_names_all[ievt]
                 src = PATH.SPECFEM_DATA + '/' + solver.source_prefix +'_'+ source_name
                 unix.cat(src, dst)
 
-        setpararray('time_function_type', np.ones(nsrc).astype(int) * 10, filename= dst)
+        setpararray('time_function_type', np.ones(nsrc).astype(int) * 8, filename= dst)
         setpararray('f0', freq_rdm, filename= dst)
+        setpararray('name_of_source_file', stf_files, filename= dst)
+        

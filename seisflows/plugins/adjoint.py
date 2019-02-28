@@ -170,4 +170,4 @@ def Phase_freq2(syn,nt,dt,ft_obs,ft_stf,ft_stf_sinus,freq_mask):
     else:
       wadj[:-(j-1)*period] = wadj[-(len(syn)-(j-1)*period):]
 
-    return wadj
+    return -wadj
