@@ -140,7 +140,7 @@ def Acceleration(syn, obs, nt, dt):
 
 
 
-def Phase_freq2(syn,nt,dt,ft_obs,ft_stf,ft_stf_sinus,freq_mask):
+def Phase2_se(syn,nt,dt,ft_obs,ft_stf,ft_stf_sinus,freq_mask):
     # waveform difference
     # (Tromp et al 2005, eq 9)
     wadj = _np.zeros(len(syn))

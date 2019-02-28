@@ -6,7 +6,7 @@ OPTIMIZE='LBFGS'        # NLCG, LBFGS
 PREPROCESS='ortho'      # base
 POSTPROCESS='base'      # base
 
-MISFIT='Phase_freq2'
+MISFIT='Phase2_se'
 MATERIALS='LegacyAcoustic'
 DENSITY='Constant'
 ATTENUATION='no'
