@@ -91,13 +91,14 @@ class base(object):
             obs = self.reader(path+'/'+'traces/obs', filename)
             syn = self.reader(path+'/'+'traces/syn', filename)
 
+            nt, dt, _ = self.get_time_scheme(syn)
             # process observations
-            obs = self.apply_filter(obs)
+            obs = self.apply_filter(obs, dt)
             obs = self.apply_mute(obs)
             obs = self.apply_normalize(obs)
 
             # process synthetics
-            syn = self.apply_filter(syn)
+            syn = self.apply_filter(syn,dt)
             syn = self.apply_mute(syn)
             syn = self.apply_normalize(syn)
 

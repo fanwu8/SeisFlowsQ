@@ -140,7 +140,7 @@ def Acceleration(syn, obs, nt, dt):
 
 
 
-def Phase_freq2(syn,nt,dt,ft_obs,sff_freq,sff_freq_true,freq_mask):
+def Phase_freq2(syn,nt,dt,ft_obs,ft_stf,ft_stf_sinus,freq_mask):
     # waveform difference
     # (Tromp et al 2005, eq 9)
     wadj = _np.zeros(len(syn))
@@ -150,7 +150,7 @@ def Phase_freq2(syn,nt,dt,ft_obs,sff_freq,sff_freq_true,freq_mask):
     freq_loc = loadnpy(PATH.ORTHO + '/freq')
     
     ft_syn = fft(syn[-period:])[m]
-    obs = ft_syn / ( ft_obs * sff_freq_true / sff_freq )
+    obs = ft_syn /  ( ft_obs * ft_stf_sinus / ft_stf )
 
     phase = _np.vectorize(cmath.phase)
 
@@ -159,7 +159,7 @@ def Phase_freq2(syn,nt,dt,ft_obs,sff_freq,sff_freq_true,freq_mask):
     #amp_syn = abs(ft_syn)/ (abs(freq_loc)/500.0)
     inv_fft = _np.zeros(period,dtype=complex)
     inv_fft[m] = (freq_mask * phase_obs  ) *  _np.vectorize(_np.complex)(-_np.sin(phase_syn),_np.cos(phase_syn))
-    wadj[-period:] = - 10e15*ifft(inv_fft).real
+    wadj[-period:] = -ifft(inv_fft).real
     #repeat the periodic signal
     j=1
     while ((j+1)*period < len(syn) ):
