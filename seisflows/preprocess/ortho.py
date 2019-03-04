@@ -62,7 +62,7 @@ class ortho(custom_import('preprocess', 'base')):
         print('Number of frequencies considered: ' +str(nfreq)+' / '+str(len(freq_full)))
 
         # converts time data to Fourier domain
-        ft_stf = np.zeros((nfreq, nevt), dtype=complex)
+        sff_obs = np.zeros((nfreq, nevt), dtype=complex)
         ft_obs = np.zeros((nfreq, nevt, nrec), dtype=complex) # TODO ntrace
 
         for isrc in range(nevt):
@@ -74,7 +74,7 @@ class ortho(custom_import('preprocess', 'base')):
                 for line in lines:
                     stf_obs.append(float(line.split()[1]))
 
-            ft_stf[:, isrc] = fft(stf_obs, n=period)[freq_idx]
+            sff_obs[:, isrc] = fft(stf_obs, n=period)[freq_idx]
             # for itrace in range(ntrace):
             #     trace = self.reader(PATH.DATA + '/' + source_name, solver.data_filenames[itrace])
             #     for irec in range(nrec):
@@ -85,7 +85,7 @@ class ortho(custom_import('preprocess', 'base')):
         
         self.save('freq_idx', freq_idx)
         self.save('freq', freq)
-        self.save('ft_stf', ft_stf)
+        self.save('sff_obs', sff_obs)
         self.save('ft_obs', ft_obs)
  
     def prepare_eval_grad(self, path='.',wat=True):
@@ -122,13 +122,18 @@ class ortho(custom_import('preprocess', 'base')):
         residuals = []
         # TODO freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
         ft_obs_se = self.load('ft_obs_se')
-        ft_stf_se = self.load('ft_stf_se')
-        ft_stf_se_sinus = self.load('ft_stf_se_sinus')
+        sff_obs_se = self.load('sff_obs_se')
+        sff_syn_se = self.load('sff_syn_se')
         freq_mask = self.load('freq_mask_se')
         
         for ii in range(nn):
-            residuals.append(self.misfit(syn[ii].data, nt, dt,ft_obs_se[:,ii],ft_stf_se,ft_stf_se_sinus,freq_mask[:,ii]))
-        #residuals.append(self.misfit(syn, nt, dt,ft_obs_se,freq_mask))
+            residuals.append(
+                self.misfit(syn[ii].data, nt, dt,
+                ft_obs_se[:,ii],
+                sff_obs_se,
+                sff_syn_se,
+                freq_mask[:,ii])
+            )
         
         filename = path+'/'+'residuals'
         if exists(filename):
@@ -157,13 +162,18 @@ class ortho(custom_import('preprocess', 'base')):
         #freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
         
         ft_obs_se = self.load('ft_obs_se')
-        ft_stf_se = self.load('ft_stf_se')
-        ft_stf_se_sinus = self.load('ft_stf_se_sinus')
+        sff_obs = self.load('sff_obs_se')
+        sff_syn = self.load('sff_syn_se')
         freq_mask = self.load('freq_mask_se')
         
         for ii in range(nn):
-            adj[ii].data = self.adjoint(syn[ii].data, nt, dt,ft_obs_se[:,ii],ft_stf_se,ft_stf_se_sinus,freq_mask[:,ii])
-        #self.adjoint(syn, adj, nt, dt,ft_obs_se,freq_mask)
+            adj[ii].data = self.adjoint(
+                syn[ii].data, nt, dt,
+                ft_obs_se[:,ii],
+                sff_obs,sff_syn,
+                freq_mask[:,ii]
+            )
+            
         adj = self.apply_filter(adj,dt)
         
         #subset = np.random.choice([i for i in range(nn)],nn-nn/3)

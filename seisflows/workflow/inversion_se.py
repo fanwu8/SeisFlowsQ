@@ -93,7 +93,7 @@ class inversion_se(inversion):
         # read data processed py ortho
         freq_idx = loadnpy(PATH.ORTHO + '/freq_idx')
         freq = loadnpy(PATH.ORTHO + '/freq')
-        ft_stf = loadnpy(PATH.ORTHO + '/ft_stf')
+        sff_obs = loadnpy(PATH.ORTHO + '/sff_obs')
         ft_obs = loadnpy(PATH.ORTHO + '/ft_obs')
         
         nfreq = len(freq_idx)
@@ -101,9 +101,9 @@ class inversion_se(inversion):
 
         # declaring arrays
         ft_obs_se = np.zeros((nfreq, nrec), dtype=complex)
-        ft_stf_se = np.zeros((nfreq), dtype=complex)
-        ft_stf_se_sinus = np.zeros((nfreq), dtype=complex)
-        ft_stf_sinus = np.zeros((nfreq, nsrc), dtype=complex)
+        sff_obs_se = np.zeros((nfreq), dtype=complex)
+        sff_syn_se = np.zeros((nfreq), dtype=complex)
+        sff_syn = np.zeros((nfreq, nsrc), dtype=complex)
         
         # frequency processing
         # TODO freq_mask
@@ -128,7 +128,7 @@ class inversion_se(inversion):
                 f0 = freq_rdm[isrc]
                 T = 2 * np.pi * dt * np.linspace(0, nt - 1, nt) * f0
                 stf_sinus = 1000 * np.sin(T)
-                ft_stf_sinus[:, isrc] = fft(stf_sinus[-period:])[freq_idx]
+                sff_syn[:, isrc] = fft(stf_sinus[-period:])[freq_idx]
                 stf[:, 0] = T
                 stf[:, 1] = stf_sinus
                 stf_file = PATH.SOLVER + '/000000/DATA/STF_' + str(ievt) + '_' + str(ifpe)
@@ -145,8 +145,8 @@ class inversion_se(inversion):
                         n += 1
                         ft_obs_se[ifreq, :]  = ft_obs[ifreq, ievt, :]
                         # TODO freq_mask
-                        ft_stf_se[ifreq] = ft_stf[ifreq, ievt]
-                        ft_stf_se_sinus[ifreq]  = ft_stf_sinus[ifreq, rdm_idx[isrc]]
+                        sff_obs_se[ifreq] = sff_obs[ifreq, ievt]
+                        sff_syn_se[ifreq] = sff_syn[ifreq, rdm_idx[isrc]]
 
                 if n != 2:
                     print('Warning: descrete frequency is not a subset of frequency band')
@@ -154,8 +154,8 @@ class inversion_se(inversion):
         # assert that random frequency is a subset of ferquency bands
 
         savenpy(PATH.ORTHO +'/ft_obs_se', ft_obs_se)
-        savenpy(PATH.ORTHO +'/ft_stf_se', ft_stf_se)
-        savenpy(PATH.ORTHO +'/ft_stf_se_sinus', ft_stf_se_sinus)
+        savenpy(PATH.ORTHO +'/sff_obs_se', sff_obs_se)
+        savenpy(PATH.ORTHO +'/sff_syn_se', sff_syn_se)
         savenpy(PATH.ORTHO +'/freq_mask_se', freq_mask_se)
 
         dst = PATH.SOLVER + '/000000/DATA/' + solver.source_prefix

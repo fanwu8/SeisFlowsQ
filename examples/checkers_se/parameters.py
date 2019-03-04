@@ -1,7 +1,7 @@
 
 WORKFLOW='inversion_se' # inversion, migration
 SOLVER='specfem2d'      # specfem2d, specfem3d
-SYSTEM='serial'      # serial, pbs, slurm
+SYSTEM='serial'         # serial, pbs, slurm
 OPTIMIZE='LBFGS'        # NLCG, LBFGS
 PREPROCESS='ortho'      # base
 POSTPROCESS='base'      # base
