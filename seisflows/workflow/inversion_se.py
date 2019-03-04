@@ -119,7 +119,7 @@ class inversion_se(inversion):
         rdm_idx = range(nsrc)
         freq_rdm = freq_range[rdm_idx]
 
-        # get individual frequency
+        # get sinus source time function
         stf = np.zeros([nt, 2])
         stf_files = []
         for ifpe in range(nfpe):
@@ -135,20 +135,20 @@ class inversion_se(inversion):
                 stf_files.append(stf_file)
                 np.savetxt(stf_file, stf)
 
-        # encode frequencies
+        # find matching frequencies
         for ifpe in range(nfpe):
             for ievt in range(nevt):
                 isrc = ifpe * nevt + ievt
-                n = 0
+                nmatch = 0
                 for ifreq in range(nfreq):
                     if abs(abs(freq_rdm[isrc]) - abs(freq[ifreq])) < freq_thresh:
-                        n += 1
+                        nmatch += 1
                         ft_obs_se[ifreq, :]  = ft_obs[ifreq, ievt, :]
                         # TODO freq_mask
                         sff_obs_se[ifreq] = sff_obs[ifreq, ievt]
                         sff_syn_se[ifreq] = sff_syn[ifreq, rdm_idx[isrc]]
 
-                if n != 2:
+                if nmatch != 2:
                     print('Warning: descrete frequency is not a subset of frequency band')
         
         # assert that random frequency is a subset of ferquency bands
