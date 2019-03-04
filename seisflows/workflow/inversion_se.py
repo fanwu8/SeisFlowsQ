@@ -144,7 +144,10 @@ class inversion_se(inversion):
                 if nmatch != 2:
                     print('Warning: descrete frequency is not a subset of frequency band')
 
-                filename = PATH.SOLVER + '/000000/DATA/STF_' + str(ievt) + '_' + str(ifpe)
+                jevt = rdm_idx[isrc] % nevt
+                jfpe = int((rdm_idx[isrc] - jevt) / nevt)
+                jsrc = jfpe * nevt + jevt
+                filename = PATH.SOLVER + '/000000/DATA/STF_' + str(jevt) + '_' + str(jfpe)
                 stf_filenames[isrc] = filename
 
                 if optimize.iter == 1:
@@ -167,9 +170,9 @@ class inversion_se(inversion):
                 src = PATH.SPECFEM_DATA + '/' + solver.source_prefix +'_'+ source_name
                 unix.cat(src, dst)
 
-        setpararray('time_function_type', np.ones(nsrc).astype(int) * 8, filename= dst)
-        setpararray('f0', freq_rdm, filename= dst)
-        setpararray('name_of_source_file', stf_filenames, filename= dst)
+        setpararray('time_function_type', np.ones(nsrc).astype(int) * 8, filename=dst)
+        setpararray('f0', freq_rdm, filename=dst)
+        setpararray('name_of_source_file', stf_filenames, filename=dst)
         
         # set number of sources fo solver
         if optimize.iter == 1:
