@@ -87,6 +87,7 @@ class inversion_se(inversion):
     def get_random_frequencies(self):
         """ Randomly assign a unique frequency for each source
         """
+        # ref preprocess/ortho.py setup()
         ntpss = PAR.NTPSS
         dt = PAR.DT
         nt = PAR.NT
@@ -94,8 +95,6 @@ class inversion_se(inversion):
         nevt = PAR.NEVT
         nfpe = PAR.NFREQ_PER_EVENT
         nsrc = nevt * nfpe
-
-        # get the number of relevant frequencies
         freq_min = float(PAR.FREQ_MIN)
         freq_max = float(PAR.FREQ_MAX)
 
@@ -109,10 +108,9 @@ class inversion_se(inversion):
         # ntrace = ft_obs.shape[3]
 
         # declaring arrays
-        ft_obs_se = np.zeros((nfreq, nrec), dtype=complex)
-        sff_obs_se = np.zeros((nfreq), dtype=complex)
-        sff_syn_se = np.zeros((nfreq), dtype=complex)
-        sff_syn = np.zeros((nfreq), dtype=complex)
+        ft_obs_se = np.zeros((nfreq, nrec), dtype=complex)    # encoded frequency of observed seismpgram
+        sff_obs_se = np.zeros((nfreq), dtype=complex)    # encoded frequency of observed source time function
+        sff_syn_se = np.zeros((nfreq), dtype=complex)   # endoced frequency of synthetic sinus source time function
         
         # frequency processing
         # TODO freq_mask
@@ -124,41 +122,38 @@ class inversion_se(inversion):
         # random frequency
         freq_range = np.linspace(freq_min + freq_shift, freq_max + freq_shift, nsrc + 1)[:-1]
         freq_thresh = (freq_max - freq_min) / nsrc / 20
-        rdm_idx = random.sample(range(0, nsrc), nsrc)
+        rdm_idx = random.sample(range(0, nsrc), nsrc)    # randomly assign frequencies
         freq_rdm = freq_range[rdm_idx]
 
         # assign frequencies
         stf_filenames = [None] * nsrc
         for ifpe in range(nfpe):
             for ievt in range(nevt):
-                isrc = ifpe * nevt + ievt
-                f0 = freq_rdm[isrc]
+                isrc = ifpe * nevt + ievt    # index of sourrce
+                f0 = freq_rdm[isrc]    # central frequency of source
 
                 # get sinus source time function
                 T = 2 * np.pi * dt * np.linspace(0, nt - 1, nt) * f0
-                sinus = 1000 * np.sin(T)
+                sinus = 1000 * np.sin(T)    # synthetic sinus source
                 sff_syn = fft(sinus[-ntpss:])[freq_idx]
 
                 # find and encode matching frequencies
-                nmatch = 0
                 for ifreq in range(nfreq):
                     if abs(abs(f0) - abs(freq[ifreq])) < freq_thresh:
-                        nmatch += 1
                         ft_obs_se[ifreq, :]  = ft_obs[ifreq, ievt, :]
                         # TODO freq_mask
                         sff_obs_se[ifreq] = sff_obs[ifreq, ievt]
                         sff_syn_se[ifreq] = sff_syn[ifreq]
 
-                # assert that source encoding frequency is a subset of frequency band
-                if nmatch != 2:
-                    print('Warning: descrete frequency is not a subset of frequency band')
-
+                # determine the filename to save current sinus source time function
+                # make sure that source time function files does not change over iterations
                 jevt = rdm_idx[isrc] % nevt
                 jfpe = int((rdm_idx[isrc] - jevt) / nevt)
                 jsrc = jfpe * nevt + jevt
                 filename = PATH.SOLVER + '/000000/DATA/STF_' + str(jevt) + '_' + str(jfpe)
                 stf_filenames[isrc] = filename
 
+                # save source time function file
                 if optimize.iter == 1:
                     stf_syn = np.zeros([nt, 2])
                     stf_syn[:, 0] = T
@@ -171,6 +166,7 @@ class inversion_se(inversion):
         savenpy(PATH.ORTHO +'/sff_syn_se', sff_syn_se)
         savenpy(PATH.ORTHO +'/freq_mask_se', freq_mask_se)
 
+        # write to source file for solver
         dst = PATH.SOLVER + '/000000/DATA/' + solver.source_prefix
         unix.rm(dst)
         for ifpe in range(nfpe):
