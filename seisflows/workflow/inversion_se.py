@@ -47,6 +47,14 @@ class inversion_se(inversion):
         if 'NSRC' not in PAR:
             setattr(PAR, 'NSRC', 1)
 
+        # number of timesteps after steady state
+        NTPSS = int(round(1/((PAR.FREQ_MAX-PAR.FREQ_MIN)/PAR.NEVT/PAR.NFREQ_PER_EVENT)/PAR.DT))
+        if 'NTPSS' in PAR:
+            assert(PATH.NTPSS == NTPSS)
+        
+        setattr(PAR, 'PERIOD', NTPSS)
+        print('Number of timesteps after steady state:', NTPSS)
+
 
     def setup(self):
         super().setup()
@@ -87,8 +95,8 @@ class inversion_se(inversion):
         nsrc = nevt * nfpe
 
         # get the number of relevant frequencies
-        freq_min = float(PAR.BW_L)
-        freq_max = float(PAR.BW_H)
+        freq_min = float(PAR.FREQ_MIN)
+        freq_max = float(PAR.FREQ_MAX)
 
         # read data processed py ortho
         freq_idx = loadnpy(PATH.ORTHO + '/freq_idx')
@@ -140,7 +148,7 @@ class inversion_se(inversion):
                         sff_obs_se[ifreq] = sff_obs[ifreq, ievt]
                         sff_syn_se[ifreq] = sff_syn[ifreq]
 
-                # assert that source encoding frequency is a subset of ferquency band
+                # assert that source encoding frequency is a subset of frequency band
                 if nmatch != 2:
                     print('Warning: descrete frequency is not a subset of frequency band')
 

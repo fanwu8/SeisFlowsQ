@@ -43,31 +43,29 @@ class ortho(custom_import('preprocess', 'base')):
         # get data file names from solver
         solver = sys.modules['seisflows_solver']
 
-        nevt = PAR.NEVT
-        period = PAR.PERIOD
-        dt = PAR.DT
-        nrec = PAR.NREC
+        nevt = PAR.NEVT    # number of encoded sources
+        period = PAR.PERIOD    # number of timesteps after steady state
+        dt = PAR.DT    # total number of timesteps
+        nrec = PAR.NREC    # number of stations
         # ntrace = len(solver.data_filenames)
-
-        # get the number of relevant frequencies
-        freq_min = float(PAR.BW_L)
-        freq_max = float(PAR.BW_H)
+        freq_min = float(PAR.FREQ_MIN)    # minimium frequency of interest
+        freq_max = float(PAR.FREQ_MAX)    # maximium frequency of interest
         
         #create a mask on relevant frequencies
-        freq_full = fftfreq(period, dt)
-        freq_thresh = (freq_max - freq_min) / PAR.NFREQ_PER_EVENT / nevt / 20
-        freq_idx = np.squeeze(np.where((freq_min <= abs(freq_full)) & (abs(freq_full) < freq_max - freq_thresh)))
-        freq = freq_full[freq_idx]
-        nfreq = len(freq_idx)
+        freq_full = fftfreq(period, dt)    # full frequency compunent
+        freq_thresh = 1 / (period * dt) / 200    # threshold for frequency alignment
+        freq_idx = np.squeeze(np.where((freq_min <= abs(freq_full)) & (abs(freq_full) < freq_max - freq_thresh)))    # frequency band of interest
+        freq = freq_full[freq_idx]    # index of frequencies within the frequency band
+        nfreq = len(freq_idx)    # number of frequency within the frequency band
         print('Number of frequencies considered: ' +str(nfreq)+' / '+str(len(freq_full)))
 
         # converts time data to Fourier domain
-        sff_obs = np.zeros((nfreq, nevt), dtype=complex)
-        ft_obs = np.zeros((nfreq, nevt, nrec), dtype=complex) # TODO ntrace
+        sff_obs = np.zeros((nfreq, nevt), dtype=complex)    # fourier transform of observed source time function
+        ft_obs = np.zeros((nfreq, nevt, nrec), dtype=complex) # TODO ntrace fourier transform of observed seismogram
 
         for isrc in range(nevt):
-            source_name = solver.source_names_all[isrc]
-            stf_file = solver.stf_files_all[isrc]
+            source_name = solver.source_names_all[isrc]    # name of source
+            stf_file = solver.stf_files_all[isrc]    # name of source file
             with open(stf_file) as f:
                 lines = f.readlines()
                 stf_obs = []
