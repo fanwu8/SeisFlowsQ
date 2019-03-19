@@ -52,8 +52,9 @@ class inversion_se(inversion):
         if 'NTPSS' in PAR:
             assert(PATH.NTPSS == NTPSS)
         
-        setattr(PAR, 'PERIOD', NTPSS)
-        print('Number of timesteps after steady state:', NTPSS)
+        else:
+            setattr(PAR, 'NTPSS', NTPSS)
+            print('Number of timesteps after steady state:', NTPSS)
 
 
     def setup(self):
@@ -86,7 +87,7 @@ class inversion_se(inversion):
     def get_random_frequencies(self):
         """ Randomly assign a unique frequency for each source
         """
-        period = PAR.PERIOD
+        ntpss = PAR.NTPSS
         dt = PAR.DT
         nt = PAR.NT
         nrec = PAR.NREC
@@ -136,7 +137,7 @@ class inversion_se(inversion):
                 # get sinus source time function
                 T = 2 * np.pi * dt * np.linspace(0, nt - 1, nt) * f0
                 sinus = 1000 * np.sin(T)
-                sff_syn = fft(sinus[-period:])[freq_idx]
+                sff_syn = fft(sinus[-ntpss:])[freq_idx]
 
                 # find and encode matching frequencies
                 nmatch = 0

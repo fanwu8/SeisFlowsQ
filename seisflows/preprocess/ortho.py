@@ -44,7 +44,7 @@ class ortho(custom_import('preprocess', 'base')):
         solver = sys.modules['seisflows_solver']
 
         nevt = PAR.NEVT    # number of encoded sources
-        period = PAR.PERIOD    # number of timesteps after steady state
+        ntpss = PAR.NTPSS    # number of timesteps after steady state
         dt = PAR.DT    # total number of timesteps
         nrec = PAR.NREC    # number of stations
         # ntrace = len(solver.data_filenames)
@@ -52,8 +52,8 @@ class ortho(custom_import('preprocess', 'base')):
         freq_max = float(PAR.FREQ_MAX)    # maximium frequency of interest
         
         #create a mask on relevant frequencies
-        freq_full = fftfreq(period, dt)    # full frequency compunent
-        freq_thresh = 1 / (period * dt) / 200    # threshold for frequency alignment
+        freq_full = fftfreq(ntpss, dt)    # full frequency compunent
+        freq_thresh = 1 / (ntpss * dt) / 200    # threshold for frequency alignment
         freq_idx = np.squeeze(np.where((freq_min <= abs(freq_full)) & (abs(freq_full) < freq_max - freq_thresh)))    # frequency band of interest
         freq = freq_full[freq_idx]    # index of frequencies within the frequency band
         nfreq = len(freq_idx)    # number of frequency within the frequency band
@@ -72,14 +72,14 @@ class ortho(custom_import('preprocess', 'base')):
                 for line in lines:
                     stf_obs.append(float(line.split()[1]))
 
-            sff_obs[:, isrc] = fft(stf_obs, n=period)[freq_idx]
+            sff_obs[:, isrc] = fft(stf_obs, n=ntpss)[freq_idx]
             # for itrace in range(ntrace):
             #     trace = self.reader(PATH.DATA + '/' + source_name, solver.data_filenames[itrace])
             #     for irec in range(nrec):
-            #         ft_obs[:, isrc, irec, itrace] = fft(trace[irec].data, n=period)[freq_idx]
+            #         ft_obs[:, isrc, irec, itrace] = fft(trace[irec].data, n=ntpss)[freq_idx]
             for irec in range(nrec):
                 trace = self.reader(PATH.DATA + '/' + source_name, solver.data_filenames[0])
-                ft_obs[:, isrc, irec] = fft(trace[irec].data, n=period)[freq_idx]
+                ft_obs[:, isrc, irec] = fft(trace[irec].data, n=ntpss)[freq_idx]
         
         self.save('freq_idx', freq_idx)
         self.save('freq', freq)

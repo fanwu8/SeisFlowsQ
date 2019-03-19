@@ -108,10 +108,10 @@ def Phase2_se(syn, nt, dt,ft_obs,sff_obs,sff_syn, freq_mask):
     # waveform difference in the frequency domain, considering orthogonal frequencies
     nstep = len(syn)
     wadj = 0.0 #np.zeros(nstep)
-    period = PAR.PERIOD
+    ntpss = PAR.NTPSS
     #create a frequential mask
     m = loadnpy(PATH.ORTHO + '/freq_idx')
-    ft_syn = fft(syn[-period:])[m]
+    ft_syn = fft(syn[-ntpss:])[m]
     obs = (ft_syn / ft_obs) / (sff_syn / sff_obs)
 
     phase = np.vectorize(cmath.phase)

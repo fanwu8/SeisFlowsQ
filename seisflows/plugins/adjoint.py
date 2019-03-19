@@ -144,12 +144,12 @@ def Phase2_se(syn,nt,dt,ft_obs,sff_obs,sff_syn,freq_mask):
     # waveform difference
     # (Tromp et al 2005, eq 9)
     wadj = _np.zeros(len(syn))
-    period = PAR.PERIOD
+    ntpss = PAR.NTPSS
 
     m = loadnpy(PATH.ORTHO + '/freq_idx')
     freq_loc = loadnpy(PATH.ORTHO + '/freq')
     
-    ft_syn = fft(syn[-period:])[m]
+    ft_syn = fft(syn[-ntpss:])[m]
     obs = (ft_syn / ft_obs) / (sff_syn / sff_obs)
 
     phase = _np.vectorize(cmath.phase)
@@ -157,17 +157,17 @@ def Phase2_se(syn,nt,dt,ft_obs,sff_obs,sff_syn,freq_mask):
     phase_obs = phase(obs)
     phase_syn = phase(ft_syn)
     #amp_syn = abs(ft_syn)/ (abs(freq_loc)/500.0)
-    inv_fft = _np.zeros(period,dtype=complex)
+    inv_fft = _np.zeros(ntpss,dtype=complex)
     inv_fft[m] = (freq_mask * phase_obs  ) *  _np.vectorize(_np.complex)(-_np.sin(phase_syn),_np.cos(phase_syn))
-    wadj[-period:] = -ifft(inv_fft).real
+    wadj[-ntpss:] = -ifft(inv_fft).real
     #repeat the periodic signal
     j=1
-    while ((j+1)*period < len(syn) ):
-      wadj[ -(j+1)*period : -j*period ] = wadj[-period:]
+    while ((j+1)*ntpss < len(syn) ):
+      wadj[ -(j+1)*ntpss : -j*ntpss ] = wadj[-ntpss:]
       j+=1
     if (j==1):
-      wadj[:-period] = wadj[-(len(syn)-period):]
+      wadj[:-ntpss] = wadj[-(len(syn)-ntpss):]
     else:
-      wadj[:-(j-1)*period] = wadj[-(len(syn)-(j-1)*period):]
+      wadj[:-(j-1)*ntpss] = wadj[-(len(syn)-(j-1)*ntpss):]
 
     return -wadj
