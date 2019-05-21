@@ -109,8 +109,6 @@ class inversion_se(inversion):
 
         # declaring arrays
         ft_obs_se = np.zeros((nfreq, nrec), dtype=complex)    # encoded frequency of observed seismpgram
-        sff_obs_se = np.zeros((nfreq), dtype=complex)    # encoded frequency of observed source time function
-        sff_syn_se = np.zeros((nfreq), dtype=complex)   # endoced frequency of synthetic sinus source time function
         
         # frequency processing
         # TODO freq_mask
@@ -140,10 +138,10 @@ class inversion_se(inversion):
                 # find and encode matching frequencies
                 for ifreq in range(nfreq):
                     if abs(abs(f0) - abs(freq[ifreq])) < freq_thresh:
-                        ft_obs_se[ifreq, :]  = ft_obs[ifreq, ievt, :]
                         # TODO freq_mask
-                        sff_obs_se[ifreq] = sff_obs[ifreq, ievt]
-                        sff_syn_se[ifreq] = sff_syn[ifreq]
+                        pshift = sff_syn[ifreq] / sff_obs[ifreq, ievt]
+                        pshift /= abs(pshift)
+                        ft_obs_se[ifreq, :]  = ft_obs[ifreq, ievt, :] * pshift
 
                 # determine the filename to save current sinus source time function
                 # make sure that source time function files does not change over iterations
@@ -162,8 +160,6 @@ class inversion_se(inversion):
 
 
         savenpy(PATH.ORTHO +'/ft_obs_se', ft_obs_se)
-        savenpy(PATH.ORTHO +'/sff_obs_se', sff_obs_se)
-        savenpy(PATH.ORTHO +'/sff_syn_se', sff_syn_se)
         savenpy(PATH.ORTHO +'/freq_mask_se', freq_mask_se)
 
         # write to source file for solver

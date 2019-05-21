@@ -140,7 +140,7 @@ def Acceleration(syn, obs, nt, dt):
 
 
 
-def Phase2_se(syn,nt,dt,ft_obs,sff_obs,sff_syn,freq_mask):
+def Phase2_se(syn,nt,dt,ft_obs,freq_mask):
     # waveform difference
     # (Tromp et al 2005, eq 9)
     wadj = _np.zeros(len(syn))
@@ -150,7 +150,7 @@ def Phase2_se(syn,nt,dt,ft_obs,sff_obs,sff_syn,freq_mask):
     freq_loc = loadnpy(PATH.ORTHO + '/freq')
     
     ft_syn = fft(syn[-ntpss:])[m]
-    obs = (ft_syn / ft_obs) / (sff_syn / sff_obs)
+    obs = ft_syn / ft_obs
 
     phase = _np.vectorize(cmath.phase)
 

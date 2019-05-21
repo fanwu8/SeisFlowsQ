@@ -54,7 +54,7 @@ class ortho(custom_import('preprocess', 'base')):
         #create a mask on relevant frequencies
         freq_full = fftfreq(ntpss, dt)    # full frequency compunent
         freq_thresh = 1 / (ntpss * dt) / 200    # threshold for frequency alignment
-        freq_idx = np.squeeze(np.where((freq_min <= abs(freq_full)) & (abs(freq_full) < freq_max - freq_thresh)))    # frequency band of interest
+        freq_idx = np.squeeze(np.where((freq_min <= (freq_full)) & ((freq_full) < freq_max - freq_thresh)))    # frequency band of interest
         freq = freq_full[freq_idx]    # index of frequencies within the frequency band
         nfreq = len(freq_idx)    # number of frequency within the frequency band
         print('Number of frequencies considered: ' +str(nfreq)+' / '+str(len(freq_full)))
@@ -120,16 +120,12 @@ class ortho(custom_import('preprocess', 'base')):
         residuals = []
         # TODO freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
         ft_obs_se = self.load('ft_obs_se')
-        sff_obs_se = self.load('sff_obs_se')
-        sff_syn_se = self.load('sff_syn_se')
         freq_mask = self.load('freq_mask_se')
         
         for ii in range(nn):
             residuals.append(
                 self.misfit(syn[ii].data, nt, dt,
                 ft_obs_se[:,ii],
-                sff_obs_se,
-                sff_syn_se,
                 freq_mask[:,ii])
             )
         
@@ -160,15 +156,12 @@ class ortho(custom_import('preprocess', 'base')):
         #freq_mask = np.loadtxt('/data1/etienneb/freq_mask.txt')
         
         ft_obs_se = self.load('ft_obs_se')
-        sff_obs = self.load('sff_obs_se')
-        sff_syn = self.load('sff_syn_se')
         freq_mask = self.load('freq_mask_se')
         
         for ii in range(nn):
             adj[ii].data = self.adjoint(
                 syn[ii].data, nt, dt,
                 ft_obs_se[:,ii],
-                sff_obs,sff_syn,
                 freq_mask[:,ii]
             )
             

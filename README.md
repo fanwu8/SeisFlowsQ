@@ -21,7 +21,7 @@ make all
 3. [Install obspy](https://github.com/obspy/obspy/wiki#installation).
 4. Run example project in terminal, make sure obspy is activated.
 ````
-sh run_example.sh
+bash run_example.bash
 ````
 5. Plot output for (checker example).
 ````

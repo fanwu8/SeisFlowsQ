@@ -104,7 +104,7 @@ def Acceleration(syn, obs, nt, dt):
     return Exception('This function can only used for migration.')
 
 
-def Phase2_se(syn, nt, dt,ft_obs,sff_obs,sff_syn, freq_mask):
+def Phase2_se(syn, nt, dt,ft_obs, freq_mask):
     # waveform difference in the frequency domain, considering orthogonal frequencies
     nstep = len(syn)
     wadj = 0.0 #np.zeros(nstep)
@@ -112,7 +112,7 @@ def Phase2_se(syn, nt, dt,ft_obs,sff_obs,sff_syn, freq_mask):
     #create a frequential mask
     m = loadnpy(PATH.ORTHO + '/freq_idx')
     ft_syn = fft(syn[-ntpss:])[m]
-    obs = (ft_syn / ft_obs) / (sff_syn / sff_obs)
+    obs = ft_syn / ft_obs
 
     phase = np.vectorize(cmath.phase)
     phase_obs = phase(obs)
