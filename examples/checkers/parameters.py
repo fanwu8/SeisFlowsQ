@@ -1,7 +1,7 @@
 
 WORKFLOW='inversion'    # inversion, migration
 SOLVER='specfem2d'      # specfem2d, specfem3d
-SYSTEM='serial'         # serial, pbs, slurm
+SYSTEM='multicore'         # serial, pbs, slurm
 OPTIMIZE='LBFGS'        # NLCG, LBFGS
 PREPROCESS='base'       # base
 POSTPROCESS='base'      # base
@@ -19,6 +19,7 @@ NREC=132                # number of receivers
 NSRC=25                 # number of sources
 SAVEGRADIENT=1          # save gradient how often
 SAVERESIDUALS=1
+SAVETRACES=1
 
 # PREPROCESSING
 FORMAT='su'             # data file format
@@ -53,3 +54,4 @@ F0=0.084                # dominant frequency
 # SYSTEM
 NTASK=25                # must satisfy 1 <= NTASK <= NSRC
 NPROC=1                 # processors per task
+NPROCMAX=10

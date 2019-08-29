@@ -26,6 +26,8 @@ else
 
   while true; do
     read ie
+
+    echo "re:"$re
     if [[ $ie =~ $re ]] && [ $ie -gt 0 ] && [ $ie -le $ndir ]; then
       break
     else
@@ -37,10 +39,14 @@ fi
 dir=${dirs[ie-1]}
 echo "Running example/"$dir
 
+
 cd $dir
 
 rm -rf output*
 rm -rf scratch
 
 export PYTHONPATH=$sfroot
+
+echo $PWD
+# python $sfroot"/scripts/sfrun"
 python $sfroot"/scripts/sfrun" --workdir=$PWD

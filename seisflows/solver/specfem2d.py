@@ -121,7 +121,7 @@ class specfem2d(custom_import('solver', 'base')):
             unix.cd(self.cwd +'/'+ 'traces/adj')
             for channel in ['x', 'y', 'z', 'p']:
                 src = 'U%s_file_single.su.adj' % PAR.CHANNELS[0]
-                dst = 'U%s_file_single.su.adj' % channel
+                dst = 'U%s_file_single.su.adj' % channel           ##4 adjoint components are the same.
                 if not exists(dst):
                     unix.cp(src, dst)
 
