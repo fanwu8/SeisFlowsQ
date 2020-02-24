@@ -26,6 +26,21 @@ def Waveform(syn, obs, nt, dt):
     return wadj
 
 
+def Waveform_att(syn, obs, nt, dt):
+    tf_adj = fft((syn - obs))
+    # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
+    freq = fftfreq(len(syn), d=dt)
+    freq[0] = 0.00001
+    freq_ref = 0.084
+    freq_mask = _np.ones(len(syn))
+    freq_mask[0] = 0
+    wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
+
+    # print(_np.linalg.norm(_np.imag(wadj) / _np.linalg.norm(_np.real(wadj))))
+
+    return wadj
+
+
 def Envelope(syn, obs, nt, dt, eps=0.05):
     # envelope difference
     # (Yuan et al 2015, eq 16)
@@ -62,6 +77,24 @@ def Traveltime(syn, obs, nt, dt):
     # (Tromp et al 2005, eq 45)
     wadj = _np.zeros(nt)
     wadj[1:-1] = (syn[2:] - syn[0:-2])/(2.*dt)
+    wadj *= 1./(sum(wadj*wadj)*dt)
+    wadj *= misfit.Traveltime(syn,obs,nt,dt)
+    return wadj
+
+
+def Traveltime_att(syn, obs, nt, dt):
+    wadj = _np.zeros(nt)
+
+    tf_adj = fft(syn)
+    freq = fftfreq(len(syn), d=dt)
+    freq[0] = 0.00001
+    freq_ref = 0.084
+    freq_mask = _np.ones(len(syn))
+    freq_mask[0] = 0
+    wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
+
+
+    wadj[1:-1] = (wadj[2:] - wadj[0:-2])/(2.*dt)
     wadj *= 1./(sum(wadj*wadj)*dt)
     wadj *= misfit.Traveltime(syn,obs,nt,dt)
     return wadj
@@ -171,3 +204,10 @@ def Phase2_se(syn,nt,dt,ft_obs,freq_mask):
       wadj[:-(j-1)*ntpss] = wadj[-(len(syn)-(j-1)*ntpss):]
 
     return -wadj
+
+def GCE(syn, obs, nt, dt):
+    syn_n = syn / _np.linalg.norm(syn)
+    obs_n = obs / _np.linalg.norm(obs)
+
+    wadj = (_np.dot(syn_n,obs_n)*syn_n - obs_n) / max(1e-16, _np.linalg.norm(syn))
+    return wadj

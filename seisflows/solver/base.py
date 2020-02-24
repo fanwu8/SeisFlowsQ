@@ -80,6 +80,9 @@ class base(object):
     if PAR.DENSITY == 'Variable':
         parameters += ['rho']
 
+    if PAR.ATTENUATION == 'yes':
+       parameters = ['Qmu']
+
 
     def check(self):
         """ Checks parameters and paths
@@ -214,6 +217,11 @@ class base(object):
             self.export_traces(path+'/'+'traces/syn', prefix='traces/syn')
             self.export_traces(path+'/'+'traces/adj', prefix='traces/adj')
 
+        if PAR.ATTENUATION == 'yes' :
+              unix.cd(self.cwd)
+              self.adjoint_att()
+              self.export_att_kernel(path)
+
 
     def apply_hess(self, path=''):
         """
@@ -278,7 +286,7 @@ class base(object):
 
 
     def save(self, dict, path, parameters=['vp','vs','rho'],
-             prefix='', suffix=''):
+             prefix='', suffix='', fillin = True):
         """ 
           Saves SPECFEM2D/3D models or kernels
 
@@ -288,14 +296,16 @@ class base(object):
           :input prefix :: optional filename prefix
           :input suffix :: optional filename suffix, eg '_kernel'
         """
+
         unix.mkdir(path)
 
         # fill in any missing parameters
-        missing_keys = diff(parameters, list(dict.keys()))
-        for iproc in range(self.mesh_properties.nproc):
-            for key in missing_keys:
-                dict[key] += self.io.read_slice(
-                    PATH.MODEL_INIT, prefix+key+suffix, iproc)
+        if fillin:
+            missing_keys = diff(parameters, list(dict.keys()))
+            for iproc in range(self.mesh_properties.nproc):
+                for key in missing_keys:
+                    dict[key] += self.io.read_slice(
+                        PATH.MODEL_INIT, prefix+key+suffix, iproc)
 
         # write slices to disk
         for iproc in range(self.mesh_properties.nproc):
@@ -408,6 +418,7 @@ class base(object):
         unix.cp(src, dst)
 
     def export_model(self, path, parameters=['rho', 'vp', 'vs']):
+
         if self.taskid == 0:
             unix.mkdir(path)
             for key in parameters:
@@ -519,6 +530,9 @@ class base(object):
 
             # write traces
             preprocess.writer(d, self.cwd +'/'+ 'traces/adj', filename)
+
+            if PAR.ATTENUATION == 'yes':
+                preprocess.writer(d, self.cwd + '/' + 'traces/adj_att', filename)
 
 
     def check_mesh_properties(self, path=None):

@@ -124,6 +124,14 @@ class specfem2d(custom_import('solver', 'base')):
                 dst = 'U%s_file_single.su.adj' % channel           ##4 adjoint components are the same.
                 if not exists(dst):
                     unix.cp(src, dst)
+            if PAR.ATTENUATION == 'yes':
+                unix.cd(self.cwd + '/' + 'traces/adj_att')
+                for channel in ['x', 'y', 'z', 'p']:
+                    src = 'U%s_file_single.su.adj' % PAR.CHANNELS[0]
+                    dst = 'U%s_file_single.su.adj' % channel  ##4 adjoint components are the same.
+                    if not exists(dst):
+                        unix.cp(src, dst)
+
 
 
     def generate_mesh(self, model_path=None, model_name=None, model_type='gll'):
@@ -180,7 +188,11 @@ class specfem2d(custom_import('solver', 'base')):
 
     def adjoint_att(self):
         """ Calls SPECFEM2D adjoint solver
+
         """
+
+        setpar('SIMULATION_TYPE', '3')
+        setpar('SAVE_FORWARD', '.false.')
         unix.rm('SEM')
         unix.ln('traces/adj_att', 'SEM')
 
@@ -219,10 +231,14 @@ class specfem2d(custom_import('solver', 'base')):
 
         # work around conflicting name conventions
         files = []
-        files += glob('*proc??????_c_acoustic_kernel.bin')
-        unix.rename('c_acoustic', 'Qkappa', files)
+        files += glob('*proc??????_kappa_kernel.bin')
+        unix.rename('kappa', 'Qkappa', files)
 
-        src = glob('*Qkappa_kernel.bin')
+        files = []
+        files += glob('*proc??????_mu_kernel.bin')
+        unix.rename('mu', 'Qmu', files)
+
+        src = glob('*Q*_kernel.bin')
         dst = join(path, 'kernels', self.source_name)
         unix.mkdir(dst)
         unix.mv(src, dst)
@@ -274,6 +290,7 @@ class specfem2d(custom_import('solver', 'base')):
             rel = relpath(src, dirname(PATH.SPECFEM_DATA))
             if (rel[0:3] != '../'):
                 dst = dirname(rel)
+                unix.mkdir(dst)
                 unix.cp(src, dst)
             
 
@@ -308,10 +325,13 @@ class specfem2d(custom_import('solver', 'base')):
             stf_file = getpar('name_of_source_file', src).lstrip().rstrip()
             
             if stf_file[0:2] == './':
+                # stf_file = join(PATH.SPECFEM_DATA,stf_file[2:])
                 stf_file = dirname(PATH.SPECFEM_DATA) + '/' + stf_file[2:]
-            
+
             if not exists(stf_file):
                 stf_file = None
+            
+
 
             stf_files.append(stf_file)
 

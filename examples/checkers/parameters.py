@@ -6,7 +6,7 @@ OPTIMIZE='LBFGS'        # NLCG, LBFGS
 PREPROCESS='base'       # base
 POSTPROCESS='base'      # base
 
-MISFIT='Waveform'
+MISFIT='GCE'
 MATERIALS='LegacyAcoustic'
 DENSITY='Constant'
 ATTENUATION='no'

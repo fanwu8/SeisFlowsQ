@@ -107,6 +107,8 @@ class base(object):
 
             if write_adjoint_traces:
                 self.write_adjoint_traces(path+'/'+'traces/adj', syn, obs, filename)
+                if PAR.ATTENUATION == 'yes':
+                   self.write_adjoint_traces(path + '/' + 'traces/adj_att', syn, obs, filename, att='Yes')
 
 
     def write_residuals(self, path, syn, obs):
@@ -144,7 +146,7 @@ class base(object):
         return total_misfit
         
 
-    def write_adjoint_traces(self, path, syn, obs, channel):
+    def write_adjoint_traces(self, path, syn, obs, channel,att=''):
         """
         Writes "adjoint traces" required for gradient computation
 
@@ -157,6 +159,11 @@ class base(object):
         nn, _ = self.get_network_size(syn)
 
         adj = syn
+        if att =='Yes' :
+          self.adjoint = getattr(adjoint, 'Waveform_att')
+        else :
+          self.adjoint = getattr(adjoint, PAR.MISFIT)
+
         for ii in range(nn):
             adj[ii].data = self.adjoint(syn[ii].data, obs[ii].data, nt, dt)
 
