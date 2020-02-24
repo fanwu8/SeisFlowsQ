@@ -206,8 +206,8 @@ def Phase2_se(syn,nt,dt,ft_obs,freq_mask):
     return -wadj
 
 def GCE(syn, obs, nt, dt):
-    syn_n = syn / _np.linalg.norm(syn)
-    obs_n = obs / _np.linalg.norm(obs)
+    syn_n = syn / max(1e-16,_np.linalg.norm(syn))
+    obs_n = obs / max(1e-16,_np.linalg.norm(obs))
 
     wadj = (_np.dot(syn_n,obs_n)*syn_n - obs_n) / max(1e-16, _np.linalg.norm(syn))
     return wadj
