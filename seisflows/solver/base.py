@@ -285,7 +285,7 @@ class base(object):
         return dict
 
 
-    def save(self, dict, path, parameters=['vp','vs','rho'],
+    def save(self, dict, path, parameters=['vp','vs','rho','Qkappa','Qmu'],
              prefix='', suffix='', fillin = True):
         """ 
           Saves SPECFEM2D/3D models or kernels
