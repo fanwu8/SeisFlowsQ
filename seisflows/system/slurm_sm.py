@@ -106,13 +106,14 @@ class slurm_sm(custom_import('system', 'base')):
 
         # submit workflow
         call('sbatch '
-                + '%s ' %  PAR.SLURMARGS
-                + '--job-name=%s '%PAR.TITLE
-                + '--output=%s '%(PATH.WORKDIR +'/'+ 'output.log')
-                + '--ntasks-per-node=%d ' %PAR.NPROC
-                + '--time=%d '%PAR.WALLTIME
-                + findpath('seisflows.system') +'/'+ 'wrappers/submit '
-                + PATH.OUTPUT)
+             + '%s ' % PAR.SLURMARGS
+             + '--job-name=%s ' % PAR.TITLE
+             + '--output=%s ' % (PATH.WORKDIR + '/' + 'output.log')
+             + '--cpus-per-task=%d ' % PAR.NPROC
+             + '--ntasks=%d ' % PAR.NTASK
+             + '--time=%d ' % PAR.WALLTIME
+             + '%s ' % join(findpath('seisflows.system'), 'wrappers/submit')
+             + '%s ' % PATH.OUTPUT)
 
 
     def run(self, classname, method, hosts='all', **kwargs):
