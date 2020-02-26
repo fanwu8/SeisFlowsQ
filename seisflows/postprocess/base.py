@@ -118,16 +118,16 @@ class base(object):
                    parameters=parameters,
                    span=smo)
 
-        ker = solver.load(path+'/'+'sum',suffix='_kernel')
-        # ker2 = solver.load(path+'/'+'sum',suffix='_kernel')
+        ### kernel for Q or inv of Q?
+        # ker = solver.load(path+'/'+'sum',suffix='_kernel')
+        # model = solver.load(path + '/../model/')
+        # for key in solver.parameters:
+        #     if key in ['Qkappa', 'Qmu']:
+        #         for iproc in range(solver.mesh_properties.nproc):
+        #             ker[key][iproc] /= -model[key][iproc]**2
+        #             solver.io.write_slice(ker[key][iproc],path + '/' + 'sum',key+'_kernel',iproc)
 
-        model = solver.load(path + '/../model/')
-        # gradient = solver.merge(ker)
-        for key in solver.parameters:
-            if key in ['Qkappa', 'Qmu']:
-                for iproc in range(solver.mesh_properties.nproc):
-                    ker[key][iproc] /= -model[key][iproc]**2
-                    solver.io.write_slice(ker[key][iproc],path + '/' + 'sum',key+'_kernel',iproc)
+
             # for iproc in range(solver.mesh_properties.nproc):
 
         # for iproc in range(self.mesh_properties.nproc):
