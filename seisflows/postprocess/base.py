@@ -77,7 +77,7 @@ class base(object):
 
         if PAR.KERNELTYPE=='Relative':
             # convert from relative to absolute perturbations
-            gradient *= solver.merge(solver.load(path +'/'+ 'model'))
+            gradient /= solver.merge(solver.load(path +'/'+ 'model'))
             self.save(gradient, path, backup='relative')
 
 
@@ -119,13 +119,13 @@ class base(object):
                    span=smo)
 
         ### kernel for Q or inv of Q?
-        # ker = solver.load(path+'/'+'sum',suffix='_kernel')
-        # model = solver.load(path + '/../model/')
-        # for key in solver.parameters:
-        #     if key in ['Qkappa', 'Qmu']:
-        #         for iproc in range(solver.mesh_properties.nproc):
-        #             ker[key][iproc] /= -model[key][iproc]**2
-        #             solver.io.write_slice(ker[key][iproc],path + '/' + 'sum',key+'_kernel',iproc)
+        ker = solver.load(path+'/'+'sum',suffix='_kernel')
+        model = solver.load(path + '/../model/')
+        for key in solver.parameters:
+            if key in ['Qkappa', 'Qmu']:
+                for iproc in range(solver.mesh_properties.nproc):
+                    ker[key][iproc] /= -model[key][iproc]
+                    solver.io.write_slice(ker[key][iproc],path + '/' + 'sum',key+'_kernel',iproc)
 
 
             # for iproc in range(solver.mesh_properties.nproc):

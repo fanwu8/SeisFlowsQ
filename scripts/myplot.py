@@ -6,6 +6,7 @@ from os.path import abspath, exists, join
 
 import numpy as np
 import matplotlib
+import matplotlib.pyplot as plt
 import pylab
 import scipy.interpolate
 
@@ -145,6 +146,7 @@ if __name__ == '__main__':
         # interpolate to uniform rectangular grid
         V, X, Z = mesh2grid(v, x, z)
 
+        fig, ax = plt.subplots()
         # display figure
         pylab.pcolor(X, Z, V)
         locs = np.arange(X.min(), X.max() + 1, (X.max() - X.min()) / 5)
@@ -159,5 +161,6 @@ if __name__ == '__main__':
         pylab.title(get_title(database_file))
         pylab.gca().invert_yaxis()
         pylab.set_cmap('seismic')
+
 
         pylab.show()
