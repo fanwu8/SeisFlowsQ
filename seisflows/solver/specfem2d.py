@@ -8,7 +8,7 @@ import numpy as np
 from glob import glob
 from seisflows.plugins.solver.specfem2d import smooth_legacy
 from seisflows.tools.seismic import getpar, setpar
-
+from seisflows.plugins.solver_io import fortran_binary
 from seisflows.tools import msg
 from seisflows.tools import unix
 from seisflows.tools.seismic import call_solver
@@ -97,8 +97,23 @@ class specfem2d(custom_import('solver', 'base')):
         setpar('SIMULATION_TYPE', '1')
         setpar('SAVE_FORWARD', '.false.')
 
+
+        if PAR.ATTENUATION == 'yes':
+            Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
+            Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
+            Qkappa = 10000 / Qkappa
+            Qmu = 10000 / Qmu
+            self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
+            self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xmeshfem2D',output='mesher.log')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
+        if PAR.ATTENUATION == 'yes':
+            Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
+            Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
+            Qkappa = 10000 / Qkappa
+            Qmu = 10000 / Qmu
+            self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
+            self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
 
         if PAR.FORMAT in ['SU', 'su']:
             src = glob('OUTPUT_FILES/*.su')
@@ -164,9 +179,28 @@ class specfem2d(custom_import('solver', 'base')):
         """
         setpar('SIMULATION_TYPE', '1')
         setpar('SAVE_FORWARD', '.true.')
-        call_solver(system.mpiexec(), 'bin/xmeshfem2D')
 
+        if PAR.ATTENUATION == 'yes':
+            Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
+            Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
+            Qkappa = 10000 / Qkappa
+            Qmu = 10000 / Qmu
+            self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
+            self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
+        call_solver(system.mpiexec(), 'bin/xmeshfem2D')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
+        if PAR.ATTENUATION == 'yes':
+            Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
+            Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
+            Qkappa = 10000 / Qkappa
+            Qmu = 10000 / Qmu
+            self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
+            self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
+
+
+
+
+
 
         if PAR.FORMAT in ['SU', 'su']:
             filenames = glob('OUTPUT_FILES/*.su')
@@ -187,7 +221,21 @@ class specfem2d(custom_import('solver', 'base')):
             files = glob('traces/adj/*.su')
             unix.rename('.su', '.su.adj', files)
 
+        if PAR.ATTENUATION == 'yes':
+            Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
+            Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
+            Qkappa = 10000 / Qkappa
+            Qmu = 10000 / Qmu
+            self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
+            self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
+        if PAR.ATTENUATION == 'yes':
+            Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
+            Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
+            Qkappa = 10000 / Qkappa
+            Qmu = 10000 / Qmu
+            self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
+            self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
 
     def adjoint_att(self):
         """ Calls SPECFEM2D adjoint solver
@@ -205,7 +253,21 @@ class specfem2d(custom_import('solver', 'base')):
             files = glob('traces/adj_att/*.su')
             unix.rename('.su', '.su.adj', files)
 
+        if PAR.ATTENUATION == 'yes':
+            Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
+            Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
+            Qkappa = 10000 / Qkappa
+            Qmu = 10000 / Qmu
+            self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
+            self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
+        if PAR.ATTENUATION == 'yes':
+            Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
+            Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
+            Qkappa = 10000 / Qkappa
+            Qmu = 10000 / Qmu
+            self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
+            self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
 
 
     def rename_kernels(self):
