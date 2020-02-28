@@ -301,7 +301,7 @@ class specfem2d(custom_import('solver', 'base')):
 
         files = []
         files += glob('*proc??????_mu_kernel.bin')
-        unix.rename('mu', 'Qmu', files)
+        unix.rename('beta', 'Qmu', files)
 
         src = glob('*Q*_kernel.bin')
         dst = join(path, 'kernels', self.source_name)
