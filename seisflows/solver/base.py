@@ -216,6 +216,8 @@ class base(object):
         if export_traces:
             self.export_traces(path+'/'+'traces/syn', prefix='traces/syn')
             self.export_traces(path+'/'+'traces/adj', prefix='traces/adj')
+            if PAR.ATTENUATION == 'yes':
+                self.export_traces(path + '/' + 'traces/adj_att', prefix='traces/adj_att')
 
         if PAR.ATTENUATION == 'yes' :
               unix.cd(self.cwd)
