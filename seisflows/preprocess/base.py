@@ -158,7 +158,7 @@ class base(object):
         nt, dt, _ = self.get_time_scheme(syn)
         nn, _ = self.get_network_size(syn)
 
-        adj = syn
+        adj = syn.copy()
         if att =='Yes' :
           self.adjoint = getattr(adjoint, 'Waveform_att')
         else :

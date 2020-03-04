@@ -27,19 +27,19 @@ def Waveform(syn, obs, nt, dt):
 
 
 def Waveform_att(syn, obs, nt, dt):
-    wadj = syn - obs
-    # tf_adj = fft((syn - obs))
-    # # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
-    # freq = fftfreq(len(syn), d=dt)
-    # freq[0] = 0.001
-    # freq_ref = 10
-    # freq_mask = _np.ones(len(syn))
-    # freq_mask[0:5] = 0
-    # wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
+    # wadj = syn - obs
+    tf_adj = fft((syn - obs))
+    # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
+    freq = fftfreq(len(syn), d=dt)
+    freq[0] = 0.001
+    freq_ref = 10
+    freq_mask = _np.ones(len(syn))
+    freq_mask[0:5] = 0
+    wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
 
     # print(_np.linalg.norm(_np.imag(wadj) / _np.linalg.norm(_np.real(wadj))))
 
-    return wadj
+    return wadj.real
 
 
 def Envelope(syn, obs, nt, dt, eps=0.05):
