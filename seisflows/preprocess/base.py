@@ -108,7 +108,7 @@ class base(object):
             if write_adjoint_traces:
                 self.write_adjoint_traces(path+'/'+'traces/adj', syn, obs, filename)
                 if PAR.ATTENUATION == 'yes':
-                   self.write_adjoint_traces(path + '/' + 'traces/adj_att', syn, obs, filename, att='Yes')
+                   self.write_adjoint_traces(path+'/'+'traces/adj_att', syn, obs, filename, att='Yes')
 
 
     def write_residuals(self, path, syn, obs):
