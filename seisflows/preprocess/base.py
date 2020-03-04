@@ -166,6 +166,7 @@ class base(object):
 
         for ii in range(nn):
             adj[ii].data = self.adjoint(syn[ii].data, obs[ii].data, nt, dt)
+            print(np.max(adj[ii].data))
 
         self.writer(adj, path, channel)
 
