@@ -80,8 +80,6 @@ class base(object):
     if PAR.DENSITY == 'Variable':
         parameters += ['rho']
 
-    if PAR.ATTENUATION == 'yes':
-       parameters = ['Qmu']
 
 
     def check(self):
