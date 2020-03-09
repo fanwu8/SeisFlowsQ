@@ -35,7 +35,7 @@ def ascii(stream, path, filenames):
         w = tr.data
 
         print(path +'/'+ tr.stats.filename)
-        print(times.shape, tr.data.shape)
+        # print(times.shape, tr.data.shape)
         np.savetxt(path +'/'+ tr.stats.filename,
                    np.column_stack((t, w)))
 

@@ -45,6 +45,11 @@ def Waveform_att(syn, obs, nt, dt):
 def Envelope(syn, obs, nt, dt, eps=0.05):
     # envelope difference
     # (Yuan et al 2015, eq 16)
+    if _np.max(_np.abs(obs)) < 1e-34:
+        return obs
+    if _np.max(_np.abs(syn)) < 1e-34:
+        return syn
+
     esyn = abs(_analytic(syn))
     eobs = abs(_analytic(obs))
     etmp = (esyn - eobs)/(esyn + eps*esyn.max())

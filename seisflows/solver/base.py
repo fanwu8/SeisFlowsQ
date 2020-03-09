@@ -297,6 +297,11 @@ class base(object):
           :input prefix :: optional filename prefix
           :input suffix :: optional filename suffix, eg '_kernel'
         """
+        if PAR.ATTENUATION == 'no':
+            if 'Qkappa' in parameters:
+                parameters.remove('Qkappa')
+            if 'Qmu' in parameters:
+                parameters.remove('Qmu')
 
         unix.mkdir(path)
 
