@@ -98,7 +98,7 @@ class specfem2d(custom_import('solver', 'base')):
         setpar('SAVE_FORWARD', '.false.')
 
 
-        if PAR.ATTENUATION == 'yes':
+        if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
             Qkappa = 10000 / Qkappa
@@ -107,7 +107,7 @@ class specfem2d(custom_import('solver', 'base')):
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xmeshfem2D',output='mesher.log')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
-        if PAR.ATTENUATION == 'yes':
+        if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
             Qkappa = 10000 / Qkappa
@@ -180,7 +180,7 @@ class specfem2d(custom_import('solver', 'base')):
         setpar('SIMULATION_TYPE', '1')
         setpar('SAVE_FORWARD', '.true.')
 
-        if PAR.ATTENUATION == 'yes':
+        if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
             Qkappa = 10000 / Qkappa
@@ -189,7 +189,7 @@ class specfem2d(custom_import('solver', 'base')):
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xmeshfem2D')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
-        if PAR.ATTENUATION == 'yes':
+        if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
             Qkappa = 10000 / Qkappa
@@ -221,7 +221,7 @@ class specfem2d(custom_import('solver', 'base')):
             files = glob('traces/adj/*.su')
             unix.rename('.su', '.su.adj', files)
 
-        if PAR.ATTENUATION == 'yes':
+        if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
             Qkappa = 10000 / Qkappa
@@ -229,7 +229,7 @@ class specfem2d(custom_import('solver', 'base')):
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
-        if PAR.ATTENUATION == 'yes':
+        if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
             Qkappa = 10000 / Qkappa
@@ -253,7 +253,7 @@ class specfem2d(custom_import('solver', 'base')):
             files = glob('traces/adj_att/*.su')
             unix.rename('.su', '.su.adj', files)
 
-        if PAR.ATTENUATION == 'yes':
+        if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
             Qkappa = 10000 / Qkappa
@@ -261,7 +261,7 @@ class specfem2d(custom_import('solver', 'base')):
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
-        if PAR.ATTENUATION == 'yes':
+        if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
             Qkappa = 10000 / Qkappa
