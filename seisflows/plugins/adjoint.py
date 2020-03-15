@@ -81,6 +81,11 @@ def InstantaneousPhase(syn, obs, nt, dt, eps=0.05):
 def Traveltime(syn, obs, nt, dt):
     # cross correlation traveltime
     # (Tromp et al 2005, eq 45)
+    if _np.max(_np.abs(obs)) < 1e-34:
+        return obs
+    if _np.max(_np.abs(syn)) < 1e-34:
+        return syn
+
     wadj = _np.zeros(nt)
     wadj[1:-1] = (syn[2:] - syn[0:-2])/(2.*dt)
     wadj *= 1./(sum(wadj*wadj)*dt)
@@ -116,6 +121,10 @@ def TraveltimeInexact(syn, obs, nt, dt):
 
 
 def Amplitude(syn, obs, nt, dt):
+    if _np.max(_np.abs(obs)) < 1e-34:
+        return obs
+    if _np.max(_np.abs(syn)) < 1e-34:
+        return syn
     # cross correlation amplitude
     wadj = 1./(sum(syn*syn)*dt) * syn
     wadj *= misfit.Amplitude(syn,obs,nt,dt)

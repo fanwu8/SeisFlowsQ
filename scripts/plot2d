@@ -107,7 +107,11 @@ def get_data_files(dir):
 
 def get_title(file):
     pattern = '.*proc.*_(.*).bin'
-    return re.match(pattern, file).group(1)
+    title = re.match(pattern, file).group(1)
+    if title == 'kernel':
+        pattern = '.*proc.*_(.*)_kernel.bin'
+        title = re.match(pattern, file).group(1) + '_kernel'
+    return title
 
 
 
