@@ -56,6 +56,21 @@ def Envelope(syn, obs, nt, dt, eps=0.05):
     wadj = etmp*syn - _np.imag(_analytic(etmp*_np.imag(_analytic(syn))))
     return wadj
 
+def Envelope_att(syn, obs, nt, dt):
+    wadj0 = Envelope(syn, obs, nt, dt)
+    tf_adj = fft(wadj0)
+    freq = fftfreq(len(syn), d=dt)
+    freq[0] = 0.001
+    freq_ref = 10
+    freq_mask = _np.ones(len(syn))
+    freq_mask[0:5] = 0
+    wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
+
+    # print(_np.linalg.norm(_np.imag(wadj) / _np.linalg.norm(_np.real(wadj))))
+
+    return wadj.real
+
+
 
 def InstantaneousPhase(syn, obs, nt, dt, eps=0.05):
     # instantaneous phase 

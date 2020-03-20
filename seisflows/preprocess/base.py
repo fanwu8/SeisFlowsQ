@@ -160,7 +160,7 @@ class base(object):
 
         adj = syn.copy()
         if att =='Yes' :
-          self.adjoint = getattr(adjoint, 'Waveform_att')
+          self.adjoint = getattr(adjoint, PAR.MISFIT+'_att')
         else :
           self.adjoint = getattr(adjoint, PAR.MISFIT)
 
