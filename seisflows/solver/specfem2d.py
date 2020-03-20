@@ -31,8 +31,13 @@ class specfem2d(custom_import('solver', 'base')):
         parameters = []
         parameters += ['vs']
 
-        if PAR.ATTENUATION == 'yes':
+        if PAR.ATTENUATION == 'yes' and PAR.JOINTLY == 'no':
+            parameters = ['Qmu']
+
+        if PAR.ATTENUATION == 'yes' and PAR.JOINTLY == 'yes':
             parameters += ['Qmu']
+
+
 
 
     def check(self):
