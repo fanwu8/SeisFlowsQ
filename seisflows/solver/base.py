@@ -213,15 +213,15 @@ class base(object):
         self.export_kernels(path)
         if export_traces:
             self.export_traces(path+'/'+'traces/syn', prefix='traces/syn')
-            self.export_traces(path+'/'+'traces/adj', prefix='traces/adj')
+            # self.export_traces(path+'/'+'traces/adj', prefix='traces/adj')
 
 
         if PAR.ATTENUATION == 'yes' :
             unix.cd(self.cwd)
             self.adjoint_att()
             self.export_att_kernel(path)
-            if export_traces:
-                self.export_traces(path + '/' + 'traces/adj_att', prefix='traces/adj_att')
+            # if export_traces:
+            #     self.export_traces(path + '/' + 'traces/adj_att', prefix='traces/adj_att')
 
 
     def apply_hess(self, path=''):
