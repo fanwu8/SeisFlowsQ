@@ -80,7 +80,7 @@ def Amplitude(syn, obs, nt, dt):
     if np.max(np.abs(syn)) < 1e-34:
         return 0
 
-    return A_obs/A_syn - 1
+    return A_syn/A_obs - 1
     # return np.sqrt(np.sum(wrsd*wrsd*dt))
 
 
