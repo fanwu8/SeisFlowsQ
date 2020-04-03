@@ -58,11 +58,15 @@ def TraveltimeInexact(syn, obs, nt, dt):
 def Amplitude(syn, obs, nt, dt):
     # cross correlation amplitude
     cc = abs(np.convolve(obs, np.flipud(syn)))
-    ioff = (np.argmax(cc)-nt+1)*dt
-    if ioff <= 0:
-        wrsd = syn[ioff:] - obs[:-ioff]
-        syn0 = syn[ioff:]
-        obs0 = obs[:-ioff]
+    ioff = np.argmax(cc)-nt+1
+    # print(ioff)
+    if ioff < 0:
+        wrsd = syn[-ioff:] - obs[:ioff]
+        syn0 = syn[-ioff:]
+        obs0 = obs[:ioff]
+    elif ioff == 0:
+        syn0 = syn[:]
+        obs0 = obs[:]
     else:
         wrsd = syn[:-ioff] - obs[ioff:]
         syn0 = syn[:-ioff]
