@@ -61,9 +61,17 @@ def Amplitude(syn, obs, nt, dt):
     ioff = (np.argmax(cc)-nt+1)*dt
     if ioff <= 0:
         wrsd = syn[ioff:] - obs[:-ioff]
+        syn0 = syn[ioff:]
+        obs0 = obs[:-ioff]
     else:
         wrsd = syn[:-ioff] - obs[ioff:]
-    return np.sqrt(np.sum(wrsd*wrsd*dt))
+        syn0 = syn[:-ioff]
+        obs0 = obs[ioff:]
+
+    A_obs = np.sqrt(np.sum(obs0*obs0*dt))
+    A_syn = np.sqrt(np.sum(syn0*syn0*dt))
+    return A_obs/A_syn - 1
+    # return np.sqrt(np.sum(wrsd*wrsd*dt))
 
 
 def Envelope2(syn, obs, nt, dt, eps=0.):
