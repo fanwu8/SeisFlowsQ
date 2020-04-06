@@ -71,6 +71,52 @@ def Envelope_att(syn, obs, nt, dt):
     return wadj.real
 
 
+def Envelope2(syn, obs, nt, dt, eps=0.05):
+    # envelope difference
+    # (Yuan et al 2015, eq 16)
+    if _np.max(_np.abs(obs)) < 1e-34:
+        return obs
+    if _np.max(_np.abs(syn)) < 1e-34:
+        return syn
+
+    cc = abs(_np.convolve(obs, _np.flipud(syn)))
+    ioff = _np.argmax(cc)-nt+1
+    syn0 = _np.zeros(len(syn))
+    obs0 = _np.zeros(len(obs))
+    # print(ioff)
+    if ioff < 0:
+        syn0[-ioff:] = syn[-ioff:]
+        obs0 = obs
+    elif ioff == 0:
+        syn0 = syn
+        obs0 = obs
+    else:
+        syn0 = syn
+        obs0[ioff:] = obs[ioff:]
+
+
+    esyn = abs(_analytic(syn0))
+    eobs = abs(_analytic(obs0))
+    etmp = (esyn - eobs)/(esyn + eps*esyn.max())
+    wadj = etmp*syn0 - _np.imag(_analytic(etmp*_np.imag(_analytic(syn0))))
+    return wadj
+
+def Envelope2_att(syn, obs, nt, dt):
+    wadj0 = Envelope(syn, obs, nt, dt)
+    tf_adj = fft(wadj0)
+    freq = fftfreq(len(syn), d=dt)
+    freq[0] = 0.001
+    freq_ref = 10
+    freq_mask = _np.ones(len(syn))
+    freq_mask[0:5] = 0
+    wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
+
+    # print(_np.linalg.norm(_np.imag(wadj) / _np.linalg.norm(_np.real(wadj))))
+
+    return wadj.real
+
+
+
 
 def InstantaneousPhase(syn, obs, nt, dt, eps=0.05):
     # instantaneous phase 
@@ -159,12 +205,6 @@ def Amplitude_att(syn, obs, nt, dt):
 
     return wadj.real
 
-
-
-def Envelope2(syn, obs, nt, dt, eps=0.):
-    # envelope amplitude ratio
-    # (Yuan et al 2015, eqs B-2, B-3)
-    raise NotImplementedError
 
 
 def Envelope3(syn, obs, nt, dt, eps=0.):
