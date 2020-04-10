@@ -119,6 +119,7 @@ class base(object):
             print(np.max(mute_ratio))
             print(np.min(mute_ratio))
             gradient *= np.tile(mute_ratio,paranum)
+            solver.save(solver.split(gradient), path+'/'+'sum',suffix='_kernel')
 
 
         smo = PAR.SMOOTH * PAR.RATIO**(iter)       
