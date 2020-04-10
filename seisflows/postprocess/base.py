@@ -116,9 +116,7 @@ class base(object):
             mute_ratio = math.get_mute_ratio(dist,PAR.MUTE_RADIUS,PAR.MUTE_RATIO)
             paranum = int(len(gradient)/len(dist))
             print(paranum)
-            print(np.max(mute_ratio))
-            print(np.min(mute_ratio))
-            print
+            print(parameters)
             gradient *= np.tile(mute_ratio,paranum)
             solver.save(solver.split(gradient), path+'/'+'sum',suffix='_kernel',parameters=parameters)
 
