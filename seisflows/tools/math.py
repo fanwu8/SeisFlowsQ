@@ -201,4 +201,12 @@ def tv(Z, h=[], epsilon=1.e-6):
 
     return top/(bot + epsilon*bot.max())**0.5
 
+def get_mute_ratio(radius, maxradius, minratio):
+    # ratio = np.zeros(len(radius))
+
+    ratio = 1 - (1-minratio)*np.cos(np.pi/(2*maxradius)*radius)
+
+    ratio[np.where(radius>maxradius)] = 1
+    return ratio
+
 

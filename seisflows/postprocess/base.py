@@ -3,9 +3,10 @@ import sys
 import numpy as np
 
 from os.path import join
-from seisflows.tools import unix
+from seisflows.tools import unix, math
 from seisflows.tools.tools import exists
 from seisflows.config import ParameterError
+from seisflows.plugins import solver_io
 
 PAR = sys.modules['seisflows_parameters']
 PATH = sys.modules['seisflows_paths']
@@ -105,6 +106,20 @@ class base(object):
             gradient = solver.merge(solver.load(path+'/'+'sum',suffix='_kernel'))
             gradient *= solver.merge(solver.load(PATH.MASK))
             solver.save(solver.split(gradient), path+'/'+'sum',suffix='_kernel')
+
+
+        if PAR.MUTESRC:
+            # print(PAR.MUTE_RADIUS)
+            # print(PAR.MUTE_RATIO)
+            gradient = solver.merge(solver.load(path + '/' + 'sum', suffix='_kernel'))
+            dist = solver_io.fortran_binary._read(join(PATH.POST_PROCESS,'proc000000_dist.bin'))
+            mute_ratio = math.get_mute_ratio(dist,PAR.MUTE_RADIUS,PAR.MUTE_RATIO)
+            paranum = int(len(gradient)/len(dist))
+            print(paranum)
+            print(np.max(mute_ratio))
+            print(np.min(mute_ratio))
+            gradient *= np.tile(mute_ratio,paranum)
+
 
         smo = PAR.SMOOTH * PAR.RATIO**(iter)       
 
