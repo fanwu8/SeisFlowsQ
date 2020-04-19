@@ -42,6 +42,9 @@ class base(object):
         if 'MYSMOOTH' not in PAR:
             setattr(PAR, 'MYSMOOTH', False)
 
+        if 'FILL' not in PAR:
+            setattr(PAR, 'FILL', None)
+
         # check paths
         if 'MASK' not in PATH:
             setattr(PATH, 'MASK', None)
@@ -155,8 +158,9 @@ class base(object):
             nx = PAR.NX
             nz = PAR.NZ
             smo = PAR.SMOOTH
+            fill = PAR.FILL
             for para in parameters:
-                gradient[para][0] = math.mysmooth(gradient[para][0],x,z,nx,nz,smo)
+                gradient[para][0] = math.mysmooth(gradient[para][0],x,z,nx,nz,smo,fill)
             solver.save(gradient, path + '/' + 'sum', suffix='_kernel', parameters=parameters)
 
 

@@ -209,7 +209,7 @@ def get_mute_ratio(radius, maxradius, minratio):
     ratio[np.where(radius>maxradius)] = 1
     return ratio
 
-def mysmooth(v, x, z, nx, nz, smo, xlim=None, zlim=None, topolim=None):
+def mysmooth(v, x, z, nx, nz, smo, fill, xlim=None, zlim=None, topolim=None):
     """ Interpolates from an unstructured coordinates (mesh) to a structured
         coordinates (grid)
     """
@@ -257,8 +257,13 @@ def mysmooth(v, x, z, nx, nz, smo, xlim=None, zlim=None, topolim=None):
     print('dx:%f'%dx)
     print('dz:%f'%dz)
 
-    V = ndimage.gaussian_filter(V,sigma=smo)
-
+    if fill == 'constant':
+        cval = np.mean(V)
+        V = ndimage.gaussian_filter(V,sigma=smo,mode=fill,cval=cval)
+    elif fill == None:
+        V = ndimage.gaussian_filter(V, sigma=smo)
+    else:
+        V = ndimage.gaussian_filter(V, sigma=smo, mode=fill)
     mesh1 = _stack(X.flatten(), Z.flatten())
     grid1 = _stack(x, z)
     v1 = V.flatten()
