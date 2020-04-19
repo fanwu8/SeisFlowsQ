@@ -182,9 +182,11 @@ def TraveltimeInexact(syn, obs, nt, dt):
 
 
 def Amplitude(syn, obs, nt, dt):
-    if _np.max(_np.abs(obs)) < 1e-34:
+    if _np.max(_np.abs(obs)) < 1e-20:
+        # print(_np.max(_np.abs(obs)))
         return obs
-    if _np.max(_np.abs(syn)) < 1e-34:
+    if _np.max(_np.abs(syn)) < 1e-20:
+        # print(_np.max(_np.abs(syn)))
         return syn
     # cross correlation amplitude
     wadj = 1./(sum(syn*syn)*dt) * syn

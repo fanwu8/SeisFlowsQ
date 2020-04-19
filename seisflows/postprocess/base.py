@@ -2,6 +2,7 @@
 import sys
 import numpy as np
 
+from glob import glob
 from os.path import join
 from seisflows.tools import unix, math
 from seisflows.tools.tools import exists
@@ -34,6 +35,12 @@ class base(object):
 
         if 'PRECOND' not in PAR:
             setattr(PAR, 'PRECOND', False)
+
+        if 'MUTESRC' not in PAR:
+            setattr(PAR, 'MUTESRC', False)
+
+        if 'MYSMOOTH' not in PAR:
+            setattr(PAR, 'MYSMOOTH', False)
 
         # check paths
         if 'MASK' not in PATH:
@@ -113,25 +120,48 @@ class base(object):
             # print(PAR.MUTE_RATIO)
             gradient = solver.merge(solver.load(path + '/' + 'sum', suffix='_kernel'))
             dist = solver_io.fortran_binary._read(join(PATH.POST_PROCESS,'proc000000_dist.bin'))
-            mute_ratio = math.get_mute_ratio(dist,PAR.MUTE_RADIUS,PAR.MUTE_RATIO)
+            # mute_ratio = math.get_mute_ratio(dist,PAR.MUTE_RADIUS,PAR.MUTE_RATIO)
+            mute_ratio = dist
             paranum = int(len(gradient)/len(dist))
             print(paranum)
             print(parameters)
-            gradient *= np.tile(mute_ratio,paranum)
+            gradient = np.tile(mute_ratio,paranum)
             solver.save(solver.split(gradient), path+'/'+'sum',suffix='_kernel',parameters=parameters)
 
 
         smo = PAR.SMOOTH * PAR.RATIO**(iter)       
 
-        if PAR.SMOOTH > 0:
+        if PAR.SMOOTH > 0 and PAR.MYSMOOTH == False:
           src = path+'/'+'sum'
-          dst = path+'/'+'sum_nosmooth' 
+          dst = path+'/'+'sum_nosmooth'
           unix.mv(src, dst)
           solver.smooth(
                    input_path=path+'/'+'sum_nosmooth',
                    output_path=path+'/'+'sum',
                    parameters=parameters,
                    span=smo)
+
+        if PAR.SMOOTH > 0 and PAR.MYSMOOTH == True:
+            src = path + '/' + 'sum'
+            dst = path + '/' + 'sum_nosmooth'
+            unix.mv(src, dst)
+
+            gradient = solver.load(path + '/' + 'sum_nosmooth', suffix='_kernel')
+            files = []
+            x_coords_file = PATH.MODEL_INIT + '/proc000000_x.bin'
+            z_coords_file = PATH.MODEL_INIT + '/proc000000_z.bin'
+            x = solver_io.fortran_binary._read(x_coords_file)
+            z = solver_io.fortran_binary._read(z_coords_file)
+            nx = PAR.NX
+            nz = PAR.NZ
+            smo = PAR.SMOOTH
+            for para in parameters:
+                gradient[para][0] = math.mysmooth(gradient[para][0],x,z,nx,nz,smo)
+            solver.save(gradient, path + '/' + 'sum', suffix='_kernel', parameters=parameters)
+
+
+
+
 
         ### kernel for Q or inv of Q?
         # ker = solver.load(path+'/'+'sum',suffix='_kernel')

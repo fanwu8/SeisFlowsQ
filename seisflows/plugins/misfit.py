@@ -75,10 +75,11 @@ def Amplitude(syn, obs, nt, dt):
     A_obs = np.sqrt(np.sum(obs0*obs0*dt))
     A_syn = np.sqrt(np.sum(syn0*syn0*dt))
 
-    if np.max(np.abs(obs)) < 1e-34:
+    if A_obs < 1e-34:
         return 0
-    if np.max(np.abs(syn)) < 1e-34:
+    if A_syn < 1e-34:
         return 0
+
 
     return A_syn/A_obs - 1
     # return np.sqrt(np.sum(wrsd*wrsd*dt))

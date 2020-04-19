@@ -6,8 +6,8 @@ import os
 import numpy as np
 import scipy.signal as _signal
 import scipy.interpolate as _interp
-
 from scipy.signal import hilbert as analytic
+from scipy import ndimage
 
 
 def gauss2(X, Y, mu, sigma, normalize=True):
@@ -209,4 +209,71 @@ def get_mute_ratio(radius, maxradius, minratio):
     ratio[np.where(radius>maxradius)] = 1
     return ratio
 
+def mysmooth(v, x, z, nx, nz, smo, xlim=None, zlim=None, topolim=None):
+    """ Interpolates from an unstructured coordinates (mesh) to a structured
+        coordinates (grid)
+    """
+    if xlim is None:
+        xmax = x.max()
+        xmin = x.min()
+        lx = xmax - xmin
+    else:
+        xmax = xlim[1]
+        xmin = xlim[0]
+        lx = xmax - xmin
 
+    if zlim is None:
+        zmax = z.max()
+        zmin = z.min()
+        lz = zmax - zmin
+    else:
+        zmax = zlim[1]
+        zmin = zlim[0]
+        lz = zmax - zmin
+
+    mesh = _stack(x, z)
+
+    dx = lx / (nx-1)
+    dz = lz / (nz-1)
+
+    # construct structured grid
+    x_grid = np.linspace(xmin, xmax, nx)
+    if topolim is not None:
+        z1 = np.linspace(zmin, topolim, nz)
+        z2 = np.linspace(topolim, zmax, nz * 2)
+        z_grid = np.hstack((z1, z2))
+    else:
+        z_grid = np.linspace(zmin, zmax, nz)
+
+    X, Z = np.meshgrid(x_grid, z_grid)
+    grid = _stack(X.flatten(), Z.flatten())
+
+    # interpolate to structured grid
+    v_tmp = myinterpolate(mesh, v, grid)
+    V = np.reshape(v_tmp, (len(z_grid), len(x_grid)))
+
+    print(np.max(V))
+    print(np.min(V))
+    print('dx:%f'%dx)
+    print('dz:%f'%dz)
+
+    V = ndimage.gaussian_filter(V,sigma=smo)
+
+    mesh1 = _stack(X.flatten(), Z.flatten())
+    grid1 = _stack(x, z)
+    v1 = V.flatten()
+    v_new = myinterpolate(mesh1, v1, grid1)
+
+    return v_new
+
+def myinterpolate(mesh,v, grid):
+    V = _interp.griddata(mesh, v, grid, 'linear')
+    if np.any(np.isnan(V)):
+        W = _interp.griddata(mesh, v, grid, 'nearest')
+        for i in np.where(np.isnan(V)):
+            V[i] = W[i]
+
+    return V
+
+def _stack(*args):
+    return np.column_stack(args)
