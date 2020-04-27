@@ -300,5 +300,5 @@ def GCE(syn, obs, nt, dt):
     syn_n = syn / _np.sqrt(_np.sum(syn*syn*dt))
     obs_n = obs / _np.sqrt(_np.sum(obs*obs*dt))
 
-    wadj = (_np.dot(syn_n,obs_n)*syn_n - obs_n) / _np.sqrt(_np.sum(syn*syn*dt))
+    wadj = (_np.sum(syn_n*obs_n*dt)*syn_n - obs_n) / _np.sqrt(_np.sum(syn*syn*dt))
     return wadj
