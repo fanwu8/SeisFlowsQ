@@ -158,16 +158,16 @@ def Phase2_se(syn, nt, dt,ft_obs, freq_mask):
     return wadj
 
 def GCE(syn,obs,nt,dt):
-    if np.max(np.abs(obs)) < 1e-18:
+    if np.max(np.abs(obs)) < 1e-16:
         # print(_np.max(_np.abs(obs)))
         return 0
-    if np.max(np.abs(syn)) < 1e-18:
+    if np.max(np.abs(syn)) < 1e-16:
         # print(_np.max(_np.abs(syn)))
         return 0
 
 
     syn_n = syn / np.sqrt(np.sum(syn*syn*dt))
     obs_n = obs / np.sqrt(np.sum(obs*obs*dt))
-    return np.sqrt(-np.sum(syn_n*obs_n*dt) + 1 + 5e-16)
+    return np.sqrt(-np.sum(syn_n*obs_n*dt) + 1 + 1e-15)
 
 #TODO: make mesh denser, increase time to 3s
