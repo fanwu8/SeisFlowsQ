@@ -291,8 +291,14 @@ def Phase2_se(syn,nt,dt,ft_obs,freq_mask):
     return -wadj
 
 def GCE(syn, obs, nt, dt):
-    syn_n = syn / max(1e-16,_np.linalg.norm(syn))
-    obs_n = obs / max(1e-16,_np.linalg.norm(obs))
+    if _np.max(_np.abs(obs)) < 1e-18:
+        # print(_np.max(_np.abs(obs)))
+        return obs
+    if _np.max(_np.abs(syn)) < 1e-18:
+        # print(_np.max(_np.abs(syn)))
+        return syn
+    syn_n = syn / _np.sqrt(_np.sum(syn*syn*dt))
+    obs_n = obs / _np.sqrt(_np.sum(obs*obs*dt))
 
-    wadj = (_np.dot(syn_n,obs_n)*syn_n - obs_n) / max(1e-16, _np.linalg.norm(syn))
+    wadj = (_np.dot(syn_n,obs_n)*syn_n - obs_n) / _np.sqrt(_np.sum(syn*syn*dt))
     return wadj

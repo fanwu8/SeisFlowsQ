@@ -442,4 +442,5 @@ class specfem2d(custom_import('solver', 'base')):
     if not exists(PATH.SPECFEM_BIN+'/'+'xsmooth_sem') or \
         len(glob(PATH.MODEL_INIT+'/'+'proc*_NSPEC_ibool.bin')) == 0 or \
         len(glob(PATH.MODEL_INIT+'/'+'proc*_jacobian.bin')) == 0:
+        print("fuck smooth")
         smooth = staticmethod(smooth_legacy)

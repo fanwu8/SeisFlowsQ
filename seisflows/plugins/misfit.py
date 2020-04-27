@@ -75,9 +75,9 @@ def Amplitude(syn, obs, nt, dt):
     A_obs = np.sqrt(np.sum(obs0*obs0*dt))
     A_syn = np.sqrt(np.sum(syn0*syn0*dt))
 
-    if A_obs < 1e-34:
+    if A_obs < 1e-20:
         return 0
-    if A_syn < 1e-34:
+    if A_syn < 1e-20:
         return 0
 
 
@@ -158,6 +158,16 @@ def Phase2_se(syn, nt, dt,ft_obs, freq_mask):
     return wadj
 
 def GCE(syn,obs,nt,dt):
-    syn_n = syn / max(1e-16,np.linalg.norm(syn))
-    obs_n = obs / max(1e-16,np.linalg.norm(obs))
-    return np.sqrt(-np.dot(syn_n,obs_n) + 1 + 5e-16)
+    if np.max(np.abs(obs)) < 1e-18:
+        # print(_np.max(_np.abs(obs)))
+        return 0
+    if np.max(np.abs(syn)) < 1e-18:
+        # print(_np.max(_np.abs(syn)))
+        return 0
+
+
+    syn_n = syn / np.sqrt(np.sum(syn*syn*dt))
+    obs_n = obs / np.sqrt(np.sum(obs*obs*dt))
+    return np.sqrt(-np.sum(syn_n*obs_n*dt) + 1 + 5e-16)
+
+#TODO: make mesh denser, increase time to 3s

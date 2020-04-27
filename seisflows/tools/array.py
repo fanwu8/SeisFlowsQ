@@ -88,8 +88,8 @@ def gridsmooth(Z, span):
     import warnings
     warnings.filterwarnings('ignore')
 
-    x = np.linspace(-2.*span, 2.*span, 2.*span + 1.)
-    y = np.linspace(-2.*span, 2.*span, 2.*span + 1.)
+    x = np.linspace(-2.*span, 2.*span, 4.*span + 1.)
+    y = np.linspace(-2.*span, 2.*span, 4.*span + 1.)
     (X, Y) = np.meshgrid(x, y)
     mu = np.array([0., 0.])
     sigma = np.diag([span, span])**2.
@@ -108,6 +108,7 @@ def meshsmooth(v, mesh, span):
     V, grid = mesh2grid(v, mesh)
     nz, nx = V.shape
     W = np.ones((nz, nx))
+    print(span)
 
     # maks nans
     inan = np.isnan(V)
@@ -141,6 +142,8 @@ def mesh2grid(v, mesh):
     nz = int(np.around(np.sqrt(nn*lz/lx)))
     dx = lx/nx
     dz = lz/nz
+    print(dx)
+    print(dz)
 
     # construct structured grid
     x = np.linspace(x.min(), x.max(), nx)
