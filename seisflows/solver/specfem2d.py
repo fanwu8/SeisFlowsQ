@@ -305,8 +305,8 @@ class specfem2d(custom_import('solver', 'base')):
         unix.rename('kappa', 'Qkappa', files)
 
         files = []
-        files += glob('*proc??????_beta_kernel.bin')
-        unix.rename('beta', 'Qmu', files)
+        files += glob('*proc??????_mu_kernel.bin')
+        unix.rename('mu', 'Qmu', files)
 
         src = glob('*Q*_kernel.bin')
         dst = join(path, 'kernels', self.source_name)
@@ -442,5 +442,5 @@ class specfem2d(custom_import('solver', 'base')):
     if not exists(PATH.SPECFEM_BIN+'/'+'xsmooth_sem') or \
         len(glob(PATH.MODEL_INIT+'/'+'proc*_NSPEC_ibool.bin')) == 0 or \
         len(glob(PATH.MODEL_INIT+'/'+'proc*_jacobian.bin')) == 0:
-        print("fuck smooth")
+        # print('wrong smooth')
         smooth = staticmethod(smooth_legacy)

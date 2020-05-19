@@ -88,7 +88,8 @@ class base(object):
 
         if PAR.KERNELTYPE=='Relative':
             # convert from relative to absolute perturbations
-            gradient *= solver.merge(solver.load(path +'/'+ 'model'))
+            #TODO: gradient mul or div
+            gradient /= solver.merge(solver.load(path +'/'+ 'model'))
             self.save(gradient, path, backup='relative')
 
 

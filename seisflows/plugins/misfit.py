@@ -171,3 +171,5 @@ def GCE(syn,obs,nt,dt):
     return np.sqrt(-np.sum(syn_n*obs_n*dt) + 1 + 1e-15)
 
 #TODO: make mesh denser, increase time to 3s
+#TODO: using more sources
+#TODO: make smooth decay more
