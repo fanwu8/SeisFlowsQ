@@ -252,10 +252,10 @@ def mysmooth(v, x, z, nx, nz, smo, fill, xlim=None, zlim=None, topolim=None):
     v_tmp = myinterpolate(mesh, v, grid)
     V = np.reshape(v_tmp, (len(z_grid), len(x_grid)))
 
-    print(np.max(V))
-    print(np.min(V))
-    print('dx:%f'%dx)
-    print('dz:%f'%dz)
+    # print(np.max(V))
+    # print(np.min(V))
+    # print('dx:%f'%dx)
+    # print('dz:%f'%dz)
 
     if fill == 'constant':
         cval = np.mean(V)

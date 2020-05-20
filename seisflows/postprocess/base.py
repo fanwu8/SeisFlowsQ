@@ -89,6 +89,18 @@ class base(object):
         if PAR.KERNELTYPE=='Relative':
             # convert from relative to absolute perturbations
             #TODO: gradient mul or div
+            m_tmp = solver.load(path +'/'+ 'model')
+            grad_tmp = solver.load(
+                 path +'/'+ 'kernels/sum',
+                 suffix='_kernel')
+
+            if 'Qmu' in solver.parameters:
+                Qmu_tmp = solver_io.fortran_binary._read(path +'/'+ 'model/proc000000_Qmu.bin')
+                grad_tmp = solver_io.fortran_binary._read(path +'/'+ 'kernels/sum/proc000000_Qmu_kernel.bin')
+                grad = grad_tmp*Qmu_tmp
+                solver_io.fortran_binary._write(grad,path +'/'+ 'kernels/sum/proc000000_Qmu_kernel.bin')
+
+
             gradient /= solver.merge(solver.load(path +'/'+ 'model'))
             self.save(gradient, path, backup='relative')
 
