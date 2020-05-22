@@ -27,16 +27,17 @@ class specfem2d(custom_import('solver', 'base')):
 
       See base class for method descriptions
     """
-    if PAR.MATERIALS == 'LegacyAcoustic':
-        parameters = []
-        parameters += ['vs']
+    # if PAR.MATERIALS == 'LegacyAcoustic':
+    #     parameters = []
+    #     parameters += ['vs']
+    #
+    #     if PAR.ATTENUATION == 'yes' and PAR.JOINTLY == 'no':
+    #         parameters = ['Qmu']
+    #
+    #     if PAR.ATTENUATION == 'yes' and PAR.JOINTLY == 'yes':
+    #         parameters += ['Qmu']
 
-        if PAR.ATTENUATION == 'yes' and PAR.JOINTLY == 'no':
-            parameters = ['Qmu']
-
-        if PAR.ATTENUATION == 'yes' and PAR.JOINTLY == 'yes':
-            parameters += ['Qmu']
-
+    parameters = PAR.INVPARA
 
 
 

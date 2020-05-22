@@ -70,15 +70,15 @@ class base(object):
     assert 'MATERIALS' in PAR
     assert 'DENSITY' in PAR
 
-    parameters = []
-    if PAR.MATERIALS == 'Elastic':
-        parameters += ['vp']
-        parameters += ['vs']
-    elif PAR.MATERIALS == 'Acoustic':
-        parameters += ['vp']
-
-    if PAR.DENSITY == 'Variable':
-        parameters += ['rho']
+    # parameters = []
+    # if PAR.MATERIALS == 'Elastic':
+    #     parameters += ['vp']
+    #     parameters += ['vs']
+    # elif PAR.MATERIALS == 'Acoustic':
+    #     parameters += ['vp']
+    #
+    # if PAR.DENSITY == 'Variable':
+    #     parameters += ['rho']
 
 
 
