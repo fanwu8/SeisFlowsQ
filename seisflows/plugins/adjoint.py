@@ -31,37 +31,36 @@ def Waveform(syn, obs, nt, dt):
 
 def Waveform_att(syn, obs, nt, dt):
 
-    # wadj = syn - obs
-    # plt.plot(syn-obs,'r')
-    tf_adj = fft((syn - obs))
-    # plt.plot(a)
-    # plt.show()
-    # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
-    freq = fftfreq(len(syn), d=dt)
-    ind = _np.where((_np.abs(freq)<PAR.FREQMAX) & (_np.abs(freq)>PAR.FREQMIN))
-    freq[0] = 0.0000001
-    freq_ref = PAR.FREQREF
-    freq_mask = _np.zeros(len(syn))
-    freq_mask[ind] = 1
-    freq_mask[0] = 0
-    p1 = 2.0/_np.pi*_np.log(abs(freq)/freq_ref)-1j*_np.sign(freq)
-    a = p1.real
-    b = p1.imag
-    p2 = p1*tf_adj*freq_mask
-    wadj = ifft(p2)
-    return wadj.real
-
 
     # tf_adj = fft((syn - obs))
+    # # plt.plot(a)
+    # # plt.show()
     # # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
     # freq = fftfreq(len(syn), d=dt)
+    # ind = _np.where((_np.abs(freq)<PAR.FREQMAX) & (_np.abs(freq)>PAR.FREQMIN))
     # freq[0] = 0.0000001
     # freq_ref = PAR.FREQREF
-    # freq_mask = _np.ones(len(syn))
+    # freq_mask = _np.zeros(len(syn))
+    # freq_mask[ind] = 1
     # freq_mask[0] = 0
-    # wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
-    #
+    # p1 = 2.0/_np.pi*_np.log(abs(freq)/freq_ref)-1j*_np.sign(freq)
+    # a = p1.real
+    # b = p1.imag
+    # p2 = p1*tf_adj*freq_mask
+    # wadj = ifft(p2)
     # return wadj.real
+
+
+    tf_adj = fft((syn - obs))
+    # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
+    freq = fftfreq(len(syn), d=dt)
+    freq[0] = 0.0000001
+    freq_ref = PAR.FREQREF
+    freq_mask = _np.ones(len(syn))
+    freq_mask[0] = 0
+    wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
+
+    return wadj.real
 
 
 def Envelope(syn, obs, nt, dt, eps=0.05):
