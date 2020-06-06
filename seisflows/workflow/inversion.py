@@ -229,6 +229,17 @@ class inversion(base):
         self.write_gradient(path=PATH.GRAD, suffix='new')
 
 
+        #TODO: clear
+        if divides(optimize.iter, PAR.SAVEGRADIENT):
+            self.save_gradient()
+
+        if divides(optimize.iter, PAR.SAVEKERNELS):
+            self.save_kernels()
+
+        if divides(optimize.iter, PAR.SAVETRACES):
+            self.save_traces()
+
+
     def finalize(self):
         """ Saves results from current model update iteration
         """

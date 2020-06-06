@@ -207,7 +207,17 @@ class base(object):
 
           :input path :: directory from which model is imported
           :input export_traces :: save or discard traces?
+
+
+
         """
+        #TODO: switch
+        if PAR.ATTENUATION == 'yes' :
+            unix.cd(self.cwd)
+            self.adjoint_att()
+            self.export_att_kernel(path)
+
+
         unix.cd(self.cwd)
         self.adjoint()
         self.export_kernels(path)
@@ -216,10 +226,7 @@ class base(object):
             # self.export_traces(path+'/'+'traces/adj', prefix='traces/adj')
 
 
-        if PAR.ATTENUATION == 'yes' :
-            unix.cd(self.cwd)
-            self.adjoint_att()
-            self.export_att_kernel(path)
+
             # if export_traces:
             #     self.export_traces(path + '/' + 'traces/adj_att', prefix='traces/adj_att')
 
