@@ -89,7 +89,7 @@ def Envelope_att(syn, obs, nt, dt):
 
     # print(_np.linalg.norm(_np.imag(wadj) / _np.linalg.norm(_np.real(wadj))))
 
-    return wadj.real/PAR.COEF
+    return wadj.real
 
 
 def Envelope2(syn, obs, nt, dt, eps=0.05):
