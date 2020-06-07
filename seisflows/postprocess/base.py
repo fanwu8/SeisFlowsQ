@@ -83,7 +83,7 @@ class base(object):
         if 'Qmu' in solver.parameters:
             Qmu_tmp = solver_io.fortran_binary._read(path + '/' + 'model/proc000000_Qmu.bin')
             grad_tmp = solver_io.fortran_binary._read(path + '/' + 'kernels/sum/proc000000_Qmu_kernel.bin')
-            grad = grad_tmp * Qmu_tmp
+            grad = grad_tmp * Qmu_tmp / PAR.COEF
             solver_io.fortran_binary._write(grad, path + '/' + 'kernels/sum/proc000000_Qmu_kernel.bin')
 
 
