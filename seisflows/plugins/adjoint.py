@@ -60,7 +60,7 @@ def Waveform_att(syn, obs, nt, dt):
     freq_mask[0] = 0
     wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
 
-    return wadj.real/PAR.COEF
+    return wadj.real
 
 
 def Envelope(syn, obs, nt, dt, eps=0.05):
