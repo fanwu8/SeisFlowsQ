@@ -7,7 +7,8 @@ import sys
 import numpy as _np
 import cmath
 from scipy.signal import hilbert as _analytic
-from scipy.fftpack import fft, ifft, fftfreq
+from scipy.signal import hanning
+from scipy.fftpack import fft, ifft, fftfreq, rfft, rfftfreq,irfft
 
 from seisflows.tools.array import loadnpy
 from seisflows.plugins import misfit
@@ -27,9 +28,19 @@ def Waveform(syn, obs, nt, dt):
 
 
 
+def Waveform_att(syn,obs,nt,dt):
+    # w = hanning(nt)
+    f_adj = fft((syn-obs))
+    freq = fftfreq(len(syn),d=dt)
+    freq[0] = 0.00001
+    f_adj[0] = 0
+    freq_ref = PAR.FREQREF*(2*_np.pi)
+    a1 = 2.0/_np.pi*_np.log(abs(freq)/freq_ref) - 1j*_np.sign(freq)
+    wadj = ifft(a1*f_adj)
+    return wadj.real
 
 
-def Waveform_att(syn, obs, nt, dt):
+def Waveform_att2(syn, obs, nt, dt):
 
 
     # tf_adj = fft((syn - obs))
@@ -55,7 +66,7 @@ def Waveform_att(syn, obs, nt, dt):
     # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
     freq = fftfreq(len(syn), d=dt)
     freq[0] = 0.0000001
-    freq_ref = PAR.FREQREF
+    freq_ref = PAR.FREQREF*2*_np.pi
     freq_mask = _np.ones(len(syn))
     freq_mask[0] = 0
     wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
