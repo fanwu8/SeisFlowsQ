@@ -107,8 +107,8 @@ class specfem2d(custom_import('solver', 'base')):
         if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
-            Qkappa = 1.0 / Qkappa
-            Qmu = 1.0 / Qmu
+            Qkappa = PAR.COEF /  Qkappa
+            Qmu = PAR.COEF /  Qmu
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xmeshfem2D',output='mesher.log')
@@ -116,8 +116,8 @@ class specfem2d(custom_import('solver', 'base')):
         if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
-            Qkappa = 1.0 / Qkappa
-            Qmu = 1.0 / Qmu
+            Qkappa = PAR.COEF /  Qkappa
+            Qmu = PAR.COEF /  Qmu
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
 
@@ -189,8 +189,8 @@ class specfem2d(custom_import('solver', 'base')):
         if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
-            Qkappa = 1.0 / Qkappa
-            Qmu = 1.0 / Qmu
+            Qkappa = PAR.COEF /  Qkappa
+            Qmu = PAR.COEF /  Qmu
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xmeshfem2D')
@@ -198,8 +198,8 @@ class specfem2d(custom_import('solver', 'base')):
         if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
-            Qkappa = 1.0 / Qkappa
-            Qmu = 1.0 / Qmu
+            Qkappa = PAR.COEF /  Qkappa
+            Qmu = PAR.COEF /  Qmu
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
 
@@ -230,16 +230,16 @@ class specfem2d(custom_import('solver', 'base')):
         if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
-            Qkappa = 1.0 / Qkappa
-            Qmu = 1.0 / Qmu
+            Qkappa = PAR.COEF /  Qkappa
+            Qmu = PAR.COEF /  Qmu
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
         if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
-            Qkappa = 1.0 / Qkappa
-            Qmu = 1.0 / Qmu
+            Qkappa = PAR.COEF /  Qkappa
+            Qmu = PAR.COEF /  Qmu
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
 
@@ -262,16 +262,16 @@ class specfem2d(custom_import('solver', 'base')):
         if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
-            Qkappa = 1.0 / Qkappa
-            Qmu = 1.0 / Qmu
+            Qkappa = PAR.COEF /  Qkappa
+            Qmu = PAR.COEF /  Qmu
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
         call_solver(system.mpiexec(), 'bin/xspecfem2D')
         if PAR.ATTSIMU == 'yes':
             Qkappa = self.io._read('./DATA/proc000000_Qkappa.bin')
             Qmu = self.io._read('./DATA/proc000000_Qmu.bin')
-            Qkappa = 1.0 / Qkappa
-            Qmu = 1.0 / Qmu
+            Qkappa = PAR.COEF /  Qkappa
+            Qmu = PAR.COEF /  Qmu
             self.io._write(Qkappa, './DATA/proc000000_Qkappa.bin')
             self.io._write(Qmu, './DATA/proc000000_Qmu.bin')
             # print(np.mean(Qmu))

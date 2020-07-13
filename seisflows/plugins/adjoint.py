@@ -22,7 +22,7 @@ PATH = sys.modules['seisflows_paths']
 
 def Waveform(syn, obs, nt, dt):
     # waveform difference
-    # (Tromp et al 2005, eq 9)
+    # (Tromp et al 2005, eq 9) -
     wadj = syn - obs
     return wadj
 
@@ -34,8 +34,9 @@ def Waveform_att(syn,obs,nt,dt):
     freq = fftfreq(len(syn),d=dt)
     freq[0] = 0.00001
     f_adj[0] = 0
-    freq_ref = PAR.FREQREF*(2*_np.pi)
-    a1 = 2.0/_np.pi*_np.log(abs(freq)/freq_ref) - 1j*_np.sign(freq)
+    freq_ref = PAR.FREQREF
+    aa = 2.0/_np.pi*_np.log(abs(freq)/freq_ref) - 1j*_np.sign(freq)
+    a1 = aa - 0
     wadj = ifft(a1*f_adj)
     return wadj.real
 
