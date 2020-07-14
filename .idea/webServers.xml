@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="4133ca48-636a-438e-b781-0f43c5a8596e" name="tigercpu" url="http://tigercpu.princeton.edu">
+        <fileTransfer host="tigercpu.princeton.edu" port="22" rootFolder="/tigress/fw8/research/sf/examples" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

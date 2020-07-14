@@ -67,7 +67,7 @@ def Waveform_att2(syn, obs, nt, dt):
     # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
     freq = fftfreq(len(syn), d=dt)
     freq[0] = 0.0000001
-    freq_ref = PAR.FREQREF*2*_np.pi
+    freq_ref = PAR.FREQREF
     freq_mask = _np.ones(len(syn))
     freq_mask[0] = 0
     wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)

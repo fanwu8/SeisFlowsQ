@@ -211,7 +211,6 @@ class base(object):
 
 
         """
-        #TODO: switch
         if PAR.ATTENUATION == 'yes' :
             unix.cd(self.cwd)
             self.adjoint_att()
