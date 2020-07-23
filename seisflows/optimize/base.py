@@ -173,7 +173,7 @@ class base(object):
 
         m_tmp = m + alpha*p
         model = solver.split(m_tmp,solver.parameters)
-        Qmu = model['Qmu'][0]
+        Qmu = model['Qmu']
         for i in range(len(Qmu)):
             if Qmu[i] < PAR.COEF*0.001:
                 Qmu[i] = PAR.COEF*0.001
@@ -205,7 +205,7 @@ class base(object):
 
             m_tmp = m + alpha * p
             model = solver.split(m_tmp, solver.parameters)
-            Qmu = model['Qmu'][0]
+            Qmu = model['Qmu']
             for i in range(len(Qmu)):
                 if Qmu[i] < PAR.COEF * 0.001:
                     Qmu[i] = PAR.COEF * 0.001
