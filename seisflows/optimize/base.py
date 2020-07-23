@@ -173,11 +173,10 @@ class base(object):
 
         m_tmp = m + alpha*p
         model = solver.split(m_tmp,solver.parameters)
-        Qmu = model['Qmu']
+        Qmu = model['Qmu'][0]
         for i in range(len(Qmu)):
             if Qmu[i] < PAR.COEF*0.001:
                 Qmu[i] = PAR.COEF*0.001
-        model['Qmu'] = Qmu
         m_new = solver.merge(model,solver.parameters)
 
         self.save('m_try', m_new)
@@ -205,11 +204,10 @@ class base(object):
 
             m_tmp = m + alpha * p
             model = solver.split(m_tmp, solver.parameters)
-            Qmu = model['Qmu']
+            Qmu = model['Qmu'][0]
             for i in range(len(Qmu)):
                 if Qmu[i] < PAR.COEF * 0.001:
                     Qmu[i] = PAR.COEF * 0.001
-            model['Qmu'] = Qmu
             m_new = solver.merge(model, solver.parameters)
             self.save('m_try', m_new)
         return status
