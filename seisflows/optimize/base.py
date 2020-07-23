@@ -14,6 +14,7 @@ from seisflows.tools.seismic import  Writer
 # seisflows.config objects 
 PAR = sys.modules['seisflows_parameters']
 PATH = sys.modules['seisflows_paths']
+solver = sys.modules['seisflows_solver']
 
 
 class base(object):
@@ -169,7 +170,19 @@ class base(object):
 
         # write model corresponding to chosen step length
         self.savetxt('alpha', alpha)
-        self.save('m_try', m + alpha*p)
+
+        m_tmp = m + alpha*p
+        model = solver.split(m_tmp,solver.parameters)
+        Qmu = model['Qmu'][0]
+        for i in range(len(Qmu)):
+            if Qmu[i] < PAR.COEF*0.001:
+                Qmu[i] = PAR.COEF*0.001
+        model['Qmu'] = Qmu
+        m_new = solver.merge(model,solver.parameters)
+
+        self.save('m_try', m_new)
+
+
 
 
     def update_search(self):
@@ -189,7 +202,16 @@ class base(object):
             m = self.load('m_new')
             p = self.load('p_new')
             self.savetxt('alpha', alpha)
-            self.save('m_try', m + alpha*p)
+
+            m_tmp = m + alpha * p
+            model = solver.split(m_tmp, solver.parameters)
+            Qmu = model['Qmu'][0]
+            for i in range(len(Qmu)):
+                if Qmu[i] < PAR.COEF * 0.001:
+                    Qmu[i] = PAR.COEF * 0.001
+            model['Qmu'] = Qmu
+            m_new = solver.merge(model, solver.parameters)
+            self.save('m_try', m_new)
         return status
 
 
