@@ -4,6 +4,7 @@
 doc/_build
 parameters*c
 paths*c
+idea/
 
 output*
 scratch
