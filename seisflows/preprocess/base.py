@@ -165,8 +165,18 @@ class base(object):
           self.adjoint = getattr(adjoint, PAR.MISFIT)
 
         for ii in range(nn):
-            adj[ii].data = self.adjoint(syn[ii].data, obs[ii].data, nt, dt)
-            # print(np.max(adj[ii].data))
+            if hasattr(syn[ii],'w1'):
+                w1 = syn[ii].w1
+            else:
+                w1 = np.ones(nt)
+
+            if hasattr(syn[ii],'w2'):
+                w2 = syn[ii].w2
+            else:
+                w2 = np.ones(nt)
+            w = w1*w2
+            adj[ii].data = self.adjoint(syn[ii].data, obs[ii].data,
+                                        nt, dt, w)
 
         self.writer(adj, path, channel)
 

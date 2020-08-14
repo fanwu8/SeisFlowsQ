@@ -55,7 +55,20 @@ def TraveltimeInexact(syn, obs, nt, dt):
     return (jt-it)*dt
 
 
-def Amplitude(syn, obs, nt, dt):
+def Amplitude(syn,obs,nt,dt):
+
+    A_obs = np.sqrt(np.sum(obs*obs*dt))
+    A_syn = np.sqrt(np.sum(syn*syn*dt))
+
+    if A_obs < 1e-20:
+        return 0
+    if A_syn < 1e-20:
+        return 0
+
+    return np.log(A_obs/A_syn)
+
+
+def Amplitude2(syn, obs, nt, dt):
     # cross correlation amplitude
     cc = abs(np.convolve(obs, np.flipud(syn)))
     ioff = np.argmax(cc)-nt+1
@@ -85,28 +98,6 @@ def Amplitude(syn, obs, nt, dt):
     # return np.sqrt(np.sum(wrsd*wrsd*dt))
 
 
-def Envelope2(syn, obs, nt, dt, eps=0.):
-    # envelope amplitude ratio
-    # (Yuan et al 2015, eq B-1)
-    cc = abs(np.convolve(obs, np.flipud(syn)))
-    ioff = np.argmax(cc)-nt+1
-    # print(ioff)
-    if ioff < 0:
-        wrsd = syn[-ioff:] - obs[:ioff]
-        syn0 = syn[-ioff:]
-        obs0 = obs[:ioff]
-    elif ioff == 0:
-        syn0 = syn[:]
-        obs0 = obs[:]
-    else:
-        wrsd = syn[:-ioff] - obs[ioff:]
-        syn0 = syn[:-ioff]
-        obs0 = obs[ioff:]
-
-    esyn = abs(_analytic(syn0))
-    eobs = abs(_analytic(obs0))
-    ersd = esyn-eobs
-    return np.sqrt(np.sum(ersd*ersd*dt))
 
 
 

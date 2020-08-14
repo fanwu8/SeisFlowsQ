@@ -13,6 +13,7 @@ from scipy.fftpack import fft, ifft, fftfreq, rfft, rfftfreq,irfft
 from seisflows.tools.array import loadnpy
 from seisflows.plugins import misfit
 from seisflows.tools.math import hilbert as _hilbert
+from seisflows.tools.signal import tukeywin
 
 PAR = sys.modules['seisflows_parameters']
 PATH = sys.modules['seisflows_paths']
@@ -20,15 +21,16 @@ PATH = sys.modules['seisflows_paths']
 ### adjoint traces generators
 
 
-def Waveform(syn, obs, nt, dt):
+def Waveform(syn, obs, nt, dt,window=None):
     # waveform difference
     # (Tromp et al 2005, eq 9) -
     wadj = syn - obs
+    if window is not None:
+        wadj *= window
     return wadj
 
 
-
-def Waveform_att(syn,obs,nt,dt):
+def Waveform_att(syn,obs,nt,dt,window=None):
     # w = hanning(nt)
     f_adj = fft((syn-obs))
     freq = fftfreq(len(syn),d=dt)
@@ -38,58 +40,30 @@ def Waveform_att(syn,obs,nt,dt):
     aa = 2.0/_np.pi*_np.log(abs(freq)/freq_ref) - 1j*_np.sign(freq)
     a1 = aa - 0
     wadj = ifft(a1*f_adj)
+    if window is not None:
+        wadj *= window
     return wadj.real
 
 
-def Waveform_att2(syn, obs, nt, dt):
-
-
-    # tf_adj = fft((syn - obs))
-    # # plt.plot(a)
-    # # plt.show()
-    # # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
-    # freq = fftfreq(len(syn), d=dt)
-    # ind = _np.where((_np.abs(freq)<PAR.FREQMAX) & (_np.abs(freq)>PAR.FREQMIN))
-    # freq[0] = 0.0000001
-    # freq_ref = PAR.FREQREF
-    # freq_mask = _np.zeros(len(syn))
-    # freq_mask[ind] = 1
-    # freq_mask[0] = 0
-    # p1 = 2.0/_np.pi*_np.log(abs(freq)/freq_ref)-1j*_np.sign(freq)
-    # a = p1.real
-    # b = p1.imag
-    # p2 = p1*tf_adj*freq_mask
-    # wadj = ifft(p2)
-    # return wadj.real
-
-
-    tf_adj = fft((syn - obs))
-    # get the max frequency sampled using the sampling theorem : fe = 2 * fmax
-    freq = fftfreq(len(syn), d=dt)
-    freq[0] = 0.0000001
-    freq_ref = PAR.FREQREF
-    freq_mask = _np.ones(len(syn))
-    freq_mask[0] = 0
-    wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
-
-    return wadj.real
-
-
-def Envelope(syn, obs, nt, dt, eps=0.05):
+def Envelope(syn, obs, nt, dt, eps=0.05,window=None):
     # envelope difference
     # (Yuan et al 2015, eq 16)
-    if _np.max(_np.abs(obs)) < 1e-34:
+    if _np.max(_np.abs(obs)) < 1e-20:
         return obs
-    if _np.max(_np.abs(syn)) < 1e-34:
+    if _np.max(_np.abs(syn)) < 1e-20:
         return syn
 
     esyn = abs(_analytic(syn))
     eobs = abs(_analytic(obs))
     etmp = (esyn - eobs)/(esyn + eps*esyn.max())
     wadj = etmp*syn - _np.imag(_analytic(etmp*_np.imag(_analytic(syn))))
+    mask = tukeywin(nt,0,nt-1)
+    wadj *= mask
+    if window is not None:
+        wadj *= window
     return wadj
 
-def Envelope_att(syn, obs, nt, dt):
+def Envelope_att(syn, obs, nt, dt, window=None):
     wadj0 = Envelope(syn, obs, nt, dt)
     tf_adj = fft(wadj0)
     freq = fftfreq(len(syn), d=dt)
@@ -98,51 +72,11 @@ def Envelope_att(syn, obs, nt, dt):
     freq_mask = _np.ones(len(syn))
     freq_mask[0] = 0
     wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
+    mask = tukeywin(nt,0,nt-1)
 
-    # print(_np.linalg.norm(_np.imag(wadj) / _np.linalg.norm(_np.real(wadj))))
-
-    return wadj.real
-
-
-def Envelope2(syn, obs, nt, dt, eps=0.05):
-    # envelope difference
-    # (Yuan et al 2015, eq 16)
-    if _np.max(_np.abs(obs)) < 1e-34:
-        return obs
-    if _np.max(_np.abs(syn)) < 1e-34:
-        return syn
-
-    cc = abs(_np.convolve(obs, _np.flipud(syn)))
-    ioff = _np.argmax(cc)-nt+1
-    syn0 = _np.zeros(len(syn))
-    obs0 = _np.zeros(len(obs))
-    # print(ioff)
-    if ioff < 0:
-        syn0[-ioff:] = syn[-ioff:]
-        obs0 = obs
-    elif ioff == 0:
-        syn0 = syn
-        obs0 = obs
-    else:
-        syn0 = syn
-        obs0[ioff:] = obs[ioff:]
-
-
-    esyn = abs(_analytic(syn0))
-    eobs = abs(_analytic(obs0))
-    etmp = (esyn - eobs)/(esyn + eps*esyn.max())
-    wadj = etmp*syn0 - _np.imag(_analytic(etmp*_np.imag(_analytic(syn0))))
-    return wadj
-
-def Envelope2_att(syn, obs, nt, dt):
-    wadj0 = Envelope(syn, obs, nt, dt)
-    tf_adj = fft(wadj0)
-    freq = fftfreq(len(syn), d=dt)
-    freq[0] = 0.001
-    freq_ref = 10
-    freq_mask = _np.ones(len(syn))
-    freq_mask[0:5] = 0
-    wadj = ifft(freq_mask * ((2.0 / _np.pi) * _np.log(abs(freq) / freq_ref) - 1j * _np.sign(freq)) * tf_adj)
+    wadj *= mask
+    if window is not None:
+        wadj *= window
 
     # print(_np.linalg.norm(_np.imag(wadj) / _np.linalg.norm(_np.real(wadj))))
 
@@ -214,7 +148,22 @@ def TraveltimeInexact(syn, obs, nt, dt):
     return wadj
 
 
-def Amplitude(syn, obs, nt, dt):
+def Amplitude(syn,obs,nt,dt):
+    if _np.max(_np.abs(obs)) < 1e-20:
+        # print(_np.max(_np.abs(obs)))
+        return obs
+    if _np.max(_np.abs(syn)) < 1e-20:
+        # print(_np.max(_np.abs(syn)))
+        return syn
+
+    A_syn = _np.sqrt(_np.sum(syn*syn*dt))
+    a1 = syn / A_syn**2
+
+    wadj = -a1*misfit.Amplitude(syn,obs,nt,dt)
+    return wadj
+
+
+def Amplitude2(syn, obs, nt, dt):
     if _np.max(_np.abs(obs)) < 1e-20:
         # print(_np.max(_np.abs(obs)))
         return obs

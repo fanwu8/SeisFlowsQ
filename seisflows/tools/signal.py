@@ -43,6 +43,7 @@ def mute_early_arrivals(traces, slope, const, time_scheme, s_coords, r_coords):
 
         # apply tapered mask
         traces[ir].data *= mask(slope, const, offset, (nt, dt, 0.))
+        traces[ir].w1 = mask(slope, const, offset, (nt, dt, 0.))
 
     return traces
 
@@ -70,6 +71,7 @@ def mute_late_arrivals(traces, slope, const, time_scheme, s_coords, r_coords):
 
         # apply tapered mask
         traces[ir].data *= (1.-mask(slope, const, offset, (nt, dt, 0.)))
+        traces[ir].w2 = 1.-mask(slope, const, offset, (nt, dt, 0.))
 
     return traces
 
@@ -162,8 +164,8 @@ def tukeywin(nt, imin, imax, alpha=0.05):
     t = np.linspace(0,1,imax-imin)
     w = np.zeros(imax-imin)
     p = alpha/2.
-    lo = np.floor(p*(imax-imin-1))+1
-    hi = imax-imin-lo
+    lo = int(np.floor(p*(imax-imin-1))+1)
+    hi = int(imax-imin-lo)
     w[:lo] = (1+np.cos(np.pi/p*(t[:lo]-p)))/2
     w[lo:hi] = np.ones((hi-lo))
     w[hi:] = (1+np.cos(np.pi/p*(t[hi:]-p)))/2
