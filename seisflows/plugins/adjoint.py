@@ -64,7 +64,7 @@ def Envelope(syn, obs, nt, dt, eps=0.05,window=None):
     return wadj
 
 def Envelope_att(syn, obs, nt, dt, window=None):
-    wadj0 = Envelope(syn, obs, nt, dt)
+    wadj0 = Envelope(syn, obs, nt, dt, window=window)
     tf_adj = fft(wadj0)
     freq = fftfreq(len(syn), d=dt)
     freq[0] = 0.0000001

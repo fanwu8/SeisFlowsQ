@@ -176,7 +176,7 @@ class base(object):
                 w2 = np.ones(nt)
             w = w1*w2
             adj[ii].data = self.adjoint(syn[ii].data, obs[ii].data,
-                                        nt, dt, w)
+                                        nt, dt, window=w)
 
         self.writer(adj, path, channel)
 
