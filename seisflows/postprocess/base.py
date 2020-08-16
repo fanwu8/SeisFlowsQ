@@ -123,21 +123,10 @@ class base(object):
             # apply mask
             gradient = solver.merge(solver.load(path+'/'+'sum',suffix='_kernel'))
             gradient *= solver.merge(solver.load(PATH.MASK))
-            solver.save(solver.split(gradient), path+'/'+'sum',suffix='_kernel')
+            solver.save(solver.split(gradient), path+'/'+'sum',
+                        suffix='_kernel',parameters=parameters)
 
 
-        if PAR.MUTESRC:
-            # print(PAR.MUTE_RADIUS)
-            # print(PAR.MUTE_RATIO)
-            gradient = solver.merge(solver.load(path + '/' + 'sum', suffix='_kernel'))
-            dist = solver_io.fortran_binary._read(join(PATH.POST_PROCESS,'proc000000_dist.bin'))
-            # mute_ratio = math.get_mute_ratio(dist,PAR.MUTE_RADIUS,PAR.MUTE_RATIO)
-            mute_ratio = dist
-            paranum = int(len(gradient)/len(dist))
-            print(paranum)
-            print(parameters)
-            gradient = np.tile(mute_ratio,paranum)
-            solver.save(solver.split(gradient), path+'/'+'sum',suffix='_kernel',parameters=parameters)
 
 
         smo = PAR.SMOOTH * PAR.RATIO**(iter)       
