@@ -161,7 +161,12 @@ class base(object):
             solver.save(gradient, path + '/' + 'sum', suffix='_kernel', parameters=parameters)
 
 
-
+        if PATH.MASK:
+            # apply mask
+            gradient = solver.merge(solver.load(path+'/'+'sum',suffix='_kernel'))
+            gradient *= solver.merge(solver.load(PATH.MASK))
+            solver.save(solver.split(gradient), path+'/'+'sum',
+                        suffix='_kernel',parameters=parameters)
 
 
         ### kernel for Q or inv of Q?
