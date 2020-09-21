@@ -52,6 +52,7 @@ The following extension packages are not currently documented, but may still giv
 - https://github.com/rmodrak/seisflows-multiparameter
 - https://github.com/rmodrak/seisflows-hpc
 
+## For attenuation inversion
 
 
 [![Build Status](https://travis-ci.org/rmodrak/seisflows.svg?branch=master)](https://travis-ci.org/rmodrak/seisflows)

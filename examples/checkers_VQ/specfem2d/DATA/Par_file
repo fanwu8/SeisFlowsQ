@@ -1,0 +1,192 @@
+
+title                           = california
+
+AXISYM                          = .false.
+
+
+SIMULATION_TYPE                 = 1   
+NOISE_TOMOGRAPHY                = 0   
+SAVE_FORWARD                    = .false.  
+
+UNDO_ATTENUATION_AND_OR_PML     = .true.
+NT_DUMP_ATTENUATION             = 500
+
+NPROC                           = 1              
+partitioning_method             = 3          
+
+ngnod                           = 4              
+initialfield                    = .false.
+add_Bielak_conditions_bottom    = .false.
+add_Bielak_conditions_right     = .false.
+add_Bielak_conditions_top       = .false.
+add_Bielak_conditions_left      = .false.       
+
+MODEL                           = binary
+
+ATTENUATION_VISCOELASTIC        = .true.
+ATTENUATION_VISCOACOUSTIC       = .false.
+
+ATTENUATION_PORO_FLUID_PART     = .false.
+Q0_poroelastic                  = 1
+freq0_poroelastic               = 10
+
+
+
+P_SV                            = .true.        
+
+NSTEP                           = 4000           
+DT                              = 6.0d-2         
+USER_T0                         = 0.0d0         
+time_stepping_scheme            = 1   
+
+ACOUSTIC_FORCING                = .false.
+
+
+NSOURCES                        = 1              
+force_normal_to_surface         = .false.        
+
+
+N_SLS                           = 5                      
+ATTENUATION_f0_REFERENCE        = 0.084      
+READ_VELOCITIES_AT_f0           = .true.
+USE_SOLVOPT                     = .false.
+
+seismotype                      = 1              
+USE_TRICK_FOR_BETTER_PRESSURE   = .false.
+NSTEP_BETWEEN_OUTPUT_SEISMOS    = 5000000     
+subsamp_seismos                 = 1              
+
+save_ASCII_seismograms          = .false.        
+save_binary_seismograms_single  = .true.         
+save_binary_seismograms_double  = .false.        
+SU_FORMAT                       = .true. 
+       
+use_existing_STATIONS           = .true.
+nreceiversets                   = 1
+anglerec                        = 0.d0           
+rec_normal_to_surface           = .false.        
+save_ASCII_kernels              = .false.
+
+
+nrec                            =    1  
+xdeb                            =  0.0
+zdeb                            =  0.0
+xfin                            =  0.0
+zfin                            =  0.0
+record_at_surface_same_vertical        = .false.         
+
+
+NSTEP_BETWEEN_OUTPUT_INFO       = 400            
+
+NSTEP_BETWEEN_OUTPUT_IMAGES     = 100            
+cutsnaps                        = 1.             
+
+
+output_color_image              = .false.
+imagetype_JPEG                  = 3              
+factor_subsample_image          = 1              
+USE_CONSTANT_MAX_AMPLITUDE      = .false.
+CONSTANT_MAX_AMPLITUDE_TO_USE   = 1.17d4
+POWER_DISPLAY_COLOR             = 0.30d0         
+DRAW_SOURCES_AND_RECEIVERS      = .true.         
+DRAW_WATER_IN_BLUE              = .true.         
+USE_SNAPSHOT_NUMBER_IN_FILENAME = .false.        
+
+
+output_postscript_snapshot      = .false.         
+imagetype_postscript            = 1              
+meshvect                        = .false.        
+modelvect                       = .false.        
+boundvect                       = .true.         
+interpol                        = .true.         
+pointsdisp                      = 6              
+subsamp_postscript              = 1              
+sizemax_arrows                  = 1.d0           
+US_LETTER                       = .false.        
+
+       
+output_wavefield_dumps          = .false.        
+imagetype_wavefield_dumps       = 1              
+use_binary_for_wavefield_dumps  = .false.        
+
+output_grid_Gnuplot             = .false.        
+output_grid_ASCII               = .false.        
+OUTPUT_ENERGY                   = .false.        
+NTSTEP_BETWEEN_OUTPUT_ENERGY    = 10
+COMPUTE_INTEGRATED_ENERGY_FIELD = .false.
+
+nbmodels                        = 1              
+
+1 1 2600.d0 5800.d0 3500.0d0 0 0 10.d0 10.d0 0 0 0 0 0 0
+
+TOMOGRAPHY_FILE                 = none
+
+read_external_mesh              = .false.
+
+
+PML_BOUNDARY_CONDITIONS         = .false.
+NELEM_PML_THICKNESS             = 3
+ROTATE_PML_ACTIVATE             = .false.
+ROTATE_PML_ANGLE                = 30.
+PML_PARAMETER_ADJUSTMENT        = .false.
+
+STACEY_ABSORBING_CONDITIONS     = .true.
+
+ADD_PERIODIC_CONDITIONS         = .false.
+PERIODIC_HORIZ_DIST             = 0.3597d0
+
+
+
+
+GPU_MODE                        = .false.
+
+setup_with_binary_database = 0
+
+SAVE_MODEL                      = default
+
+
+
+NO_BACKWARD_RECONSTRUCTION     = .false.
+NSTEP_BETWEEN_COMPUTE_KERNELS = 5
+
+ 
+K_MIN_PML                       = 1.d0
+K_MAX_PML                       = 1.d0
+damping_change_factor_acoustic  = 0.5d0
+damping_change_factor_elastic   = 1.d0
+
+
+
+
+
+mesh_file                       = ./DATA/Mesh_canyon/canyon_mesh_file
+nodes_coords_file               = ./DATA/Mesh_canyon/canyon_nodes_coords_file
+materials_file                  = ./DATA/Mesh_canyon/canyon_materials_file
+free_surface_file               = ./DATA/Mesh_canyon/canyon_free_surface_file
+absorbing_surface_file          = ./DATA/Mesh_canyon/canyon_absorbing_surface_file
+CPML_element_file               = EltPML_xxxxxx
+tangential_detection_curve_file = ./DATA/courbe_eros_nodes
+
+
+
+
+
+interfacesfile                  = interfaces.dat
+
+
+xmin                            = 0.d0      
+xmax                            = 480000.d0      
+nx                              = 40             
+
+
+absorbbottom                    = .true.
+absorbright                     = .true.
+absorbtop                       = .true.
+absorbleft                      = .true.
+
+
+nbregions                       = 1              
+1 40  1 40 1
+
+NUMBER_OF_SIMULTANEOUS_RUNS     = 1
+BROADCAST_SAME_MESH_AND_MODEL   = .true.
