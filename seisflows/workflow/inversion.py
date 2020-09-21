@@ -229,7 +229,6 @@ class inversion(base):
         self.write_gradient(path=PATH.GRAD, suffix='new')
 
 
-        sys.exit(0)
 
 
     def finalize(self):
