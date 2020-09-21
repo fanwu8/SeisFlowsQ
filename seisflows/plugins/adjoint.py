@@ -48,10 +48,6 @@ def Waveform_att(syn,obs,nt,dt,window=None):
 def Envelope(syn, obs, nt, dt, eps=0.05,window=None):
     # envelope difference
     # (Yuan et al 2015, eq 16)
-    if _np.max(_np.abs(obs)) < 1e-20:
-        return obs
-    if _np.max(_np.abs(syn)) < 1e-20:
-        return syn
 
     esyn = abs(_analytic(syn))
     eobs = abs(_analytic(obs))
@@ -149,13 +145,6 @@ def TraveltimeInexact(syn, obs, nt, dt):
 
 
 def Amplitude(syn,obs,nt,dt):
-    if _np.max(_np.abs(obs)) < 1e-20:
-        # print(_np.max(_np.abs(obs)))
-        return obs
-    if _np.max(_np.abs(syn)) < 1e-20:
-        # print(_np.max(_np.abs(syn)))
-        return syn
-
     A_syn = _np.sqrt(_np.sum(syn*syn*dt))
     a1 = syn / A_syn**2
 
@@ -163,17 +152,6 @@ def Amplitude(syn,obs,nt,dt):
     return wadj
 
 
-def Amplitude2(syn, obs, nt, dt):
-    if _np.max(_np.abs(obs)) < 1e-20:
-        # print(_np.max(_np.abs(obs)))
-        return obs
-    if _np.max(_np.abs(syn)) < 1e-20:
-        # print(_np.max(_np.abs(syn)))
-        return syn
-    # cross correlation amplitude
-    wadj = 1./(sum(syn*syn)*dt) * syn
-    wadj *= misfit.Amplitude(syn,obs,nt,dt)
-    return wadj
 
 def Amplitude_att(syn, obs, nt, dt):
     wadj0 = Amplitude(syn, obs, nt, dt)

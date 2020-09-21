@@ -60,44 +60,7 @@ def Amplitude(syn,obs,nt,dt):
     A_obs = np.sqrt(np.sum(obs*obs*dt))
     A_syn = np.sqrt(np.sum(syn*syn*dt))
 
-    if A_obs < 1e-20:
-        return 0
-    if A_syn < 1e-20:
-        return 0
-
     return np.log(A_obs/A_syn)
-
-
-def Amplitude2(syn, obs, nt, dt):
-    # cross correlation amplitude
-    cc = abs(np.convolve(obs, np.flipud(syn)))
-    ioff = np.argmax(cc)-nt+1
-    # print(ioff)
-    if ioff < 0:
-        wrsd = syn[-ioff:] - obs[:ioff]
-        syn0 = syn[-ioff:]
-        obs0 = obs[:ioff]
-    elif ioff == 0:
-        syn0 = syn[:]
-        obs0 = obs[:]
-    else:
-        wrsd = syn[:-ioff] - obs[ioff:]
-        syn0 = syn[:-ioff]
-        obs0 = obs[ioff:]
-
-    A_obs = np.sqrt(np.sum(obs0*obs0*dt))
-    A_syn = np.sqrt(np.sum(syn0*syn0*dt))
-
-    if A_obs < 1e-20:
-        return 0
-    if A_syn < 1e-20:
-        return 0
-
-
-    return A_syn/A_obs - 1
-    # return np.sqrt(np.sum(wrsd*wrsd*dt))
-
-
 
 
 
@@ -148,19 +111,3 @@ def Phase2_se(syn, nt, dt,ft_obs, freq_mask):
     wadj = (freq_mask * phase_obs**2).sum()
     return wadj
 
-def GCE(syn,obs,nt,dt):
-    if np.max(np.abs(obs)) < 1e-16:
-        # print(_np.max(_np.abs(obs)))
-        return 0
-    if np.max(np.abs(syn)) < 1e-16:
-        # print(_np.max(_np.abs(syn)))
-        return 0
-
-
-    syn_n = syn / np.sqrt(np.sum(syn*syn*dt))
-    obs_n = obs / np.sqrt(np.sum(obs*obs*dt))
-    return np.sqrt(-np.sum(syn_n*obs_n*dt) + 1 + 1e-15)
-
-#TODO: make mesh denser, increase time to 3s
-#TODO: using more sources
-#TODO: make smooth decay more
