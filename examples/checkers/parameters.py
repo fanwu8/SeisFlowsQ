@@ -1,16 +1,18 @@
 
 WORKFLOW='inversion'    # inversion, migration
 SOLVER='specfem2d'      # specfem2d, specfem3d
-SYSTEM='multicore'         # serial, pbs, slurm
+SYSTEM='tiger_sm'         # serial, pbs, slurm
 OPTIMIZE='LBFGS'        # NLCG, LBFGS
 PREPROCESS='base'       # base
 POSTPROCESS='base'      # base
 
-MISFIT='GCE'
+MISFIT='Waveform'
 MATERIALS='LegacyAcoustic'
 DENSITY='Constant'
 ATTENUATION='no'
-
+ATTSIMU='no'
+INVPARA=['vs']
+COEF=100000
 
 # WORKFLOW
 BEGIN=1                 # first iteration
